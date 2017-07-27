@@ -1,0 +1,2 @@
+[![Build Status](https://travis-ci.org/SpaiR/byond-message-client.svg?branch=master)](https://travis-ci.org/SpaiR/byond-message-client) [![Coverage Status](https://coveralls.io/repos/github/SpaiR/byond-message-client/badge.svg?branch=master)](https://coveralls.io/github/SpaiR/byond-message-client?branch=master)
+### byond-message-client
