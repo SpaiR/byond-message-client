@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Container for message should be send.
+ * Container for message, which should be send.
  * Has server address, message itself and expected response type.
  */
 @Data
