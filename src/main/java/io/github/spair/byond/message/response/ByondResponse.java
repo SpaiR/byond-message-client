@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Container for converted response data.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

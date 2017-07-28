@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Wrapper for server address with server IP/DNS and port.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
