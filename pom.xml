@@ -82,6 +82,9 @@
           <aggregate>true</aggregate>
           <instrumentation>
             <excludes>
+              <exclude>io/github/spair/byond/message/ByondMessage.class</exclude>
+              <exclude>io/github/spair/byond/message/ServerAddress.class</exclude>
+              <exclude>io/github/spair/byond/message/response/**</exclude>
               <exclude>io/github/spair/byond/message/client/exceptions/**</exclude>
             </excludes>
           </instrumentation>
