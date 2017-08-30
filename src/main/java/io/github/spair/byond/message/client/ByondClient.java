@@ -69,7 +69,7 @@ public class ByondClient {
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
      * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
-     * in BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
+     * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
@@ -86,7 +86,7 @@ public class ByondClient {
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
      * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
-     * in BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
+     * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
