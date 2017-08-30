@@ -35,6 +35,17 @@ public class ByondMessage {
         this.expectedResponse = expectedResponse;
     }
 
+    public ByondMessage(String serverName, int serverPort, String message) {
+        this.serverAddress = new ServerAddress(serverName, serverPort);
+        this.message = message;
+    }
+
+    public ByondMessage(String serverName, int serverPort, String message, ResponseType expectedResponse) {
+        this.serverAddress = new ServerAddress(serverName, serverPort);
+        this.message = message;
+        this.expectedResponse = expectedResponse;
+    }
+
     public ServerAddress getServerAddress() {
         return serverAddress;
     }
