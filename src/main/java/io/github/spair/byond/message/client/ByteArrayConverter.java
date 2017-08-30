@@ -1,21 +1,11 @@
 package io.github.spair.byond.message.client;
 
-/**
- * Converter from {@link java.lang.String} into byte array understandable by BYOND.
- * Algorithm of translation was produced by reverse engineering long time ago and it's only way to send data to BYOND.
- */
 class ByteArrayConverter {
 
     byte[] convert(String message) {
         return parseMessage(message);
     }
 
-    /**
-     * Message size should be hidden in fourth byte with additional 6 length space.
-     * Message itself goes from tenth position and closed with `0x00` value.
-     * @param message {@link java.lang.String} message to convert.
-     * @return converted byte array.
-     */
     private byte[] parseMessage(String message) {
         final char messageSize = (char) (message.getBytes().length + 6);
 

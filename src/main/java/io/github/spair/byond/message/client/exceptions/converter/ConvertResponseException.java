@@ -1,7 +1,7 @@
 package io.github.spair.byond.message.client.exceptions.converter;
 
 /**
- * General exception for response to read convertion process.
+ * General exception for conversion of BYOND server response into {@link io.github.spair.byond.message.response.ByondResponse}.
  */
 public class ConvertResponseException extends RuntimeException {
 

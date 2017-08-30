@@ -10,14 +10,27 @@ import io.github.spair.byond.message.response.ResponseType;
 import java.nio.ByteBuffer;
 
 /**
- * Class to send string messages from Java program to BYOND game server.
+ * Class to send string messages from Java program to BYOND server.
  * <br>
- * Because BYOND has no native REST or something like that, communication handled with {@link java.net.Socket}.
- * BYOND game servers didn't developed to handle external communication due sockets,
- * so while reading response data, there is no way to know where it's ended.
- * The only way to close socket connection is during {@link java.net.SocketTimeoutException}.
+ * Could be created by no args constructor or with {@link ByondClient#create()} method.
+ * <br><br>
+ * Simple usage example:
+ * <pre><code>
+ * ByondMessage messageToSend = new ByondMessage(new ServerAddress("bagil.game.tgstation13.org", 2337), "?ping");
+ *
+ * ByondClient client = new ByondClient();
+ * ByondResponse response = client.sendMessage(messageToSend);
+ * </code></pre>
+ *
+ * Sending process could be made in one line style:
+ * <pre><code>
+ *  ByondResponse response = ByondClient.create().sendMessage(messageToSend);
+ * </code></pre>
+ *
+ * Message sending is based on {@link java.net.Socket} class and process of reading returned data is built on
+ * reacting on {@link java.net.SocketTimeoutException}, due to BYOND doesn't send 'end byte'.
  * <br>
- * Default timeout wait is <b>500 ms</b>. This value can be controlled with {@link #sendMessage(ByondMessage, int)} method.
+ * Response reading timeout could be set up. If it won't, default value, which is <b>500 ms</b>, will be used.
  */
 public class ByondClient {
 
@@ -25,19 +38,9 @@ public class ByondClient {
     private final int READ_TIMEOUT = 500;
 
     /**
-     * Static method to do things instead of this:
-     * <pre>
-     *     <code>
-     *         ByondClient client = new ByondClient();
-     *         client.sendCommand({@link io.github.spair.byond.message.ByondMessage});
-     *     </code>
-     * </pre>
-     * like that:
-     * <pre>
-     *     <code>
-     *         ByondClient.create().sendCommand({@link io.github.spair.byond.message.ByondMessage});
-     *     </code>
-     * </pre>
+     * Static method create {@link io.github.spair.byond.message.client.ByondClient} instance
+     * without constructor.
+     *
      * @return new {@link io.github.spair.byond.message.client.ByondClient} instance.
      */
     public static ByondClient create() {
@@ -45,7 +48,8 @@ public class ByondClient {
     }
 
     /**
-     * Send message to BYOND game server without waiting for response.
+     * Send message to BYOND server without waiting for response.
+     *
      * @param byondMessage message to send.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      */
@@ -55,16 +59,17 @@ public class ByondClient {
     }
 
     /**
-     * Send message to BYOND game server with getting response.
-     * Similar to {@link #sendMessage(ByondMessage, int)} but second argument, which is read timeout time,
-     * taken by default as <b>500 ms</b>.
+     * Send message to BYOND server with waiting for response.
+     * Similar to {@link #sendMessage(ByondMessage, int)} but without second argument,
+     * so as reading timeout <b>500 ms</b> used.
+     *
      * @param byondMessage mesasge to send.
-     * @return response from BYOND game server as {@link io.github.spair.byond.message.response.ByondResponse}
+     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
      * or as null, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
-     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Reason could hide
-     * in BYOND game server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
+     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
+     * in BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
@@ -72,15 +77,16 @@ public class ByondClient {
     }
 
     /**
-     * Send message to BYOND game server with getting response.
+     * Send message to BYOND server with waiting for response.
+     *
      * @param byondMessage message to send.
      * @param readTimeout timeout time to read response.
-     * @return response from BYOND game server as {@link io.github.spair.byond.message.response.ByondResponse}
+     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
      * or as null, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
-     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Reason could hide
-     * in BYOND game server itself. Typical, it doesn't handle message which was send and, as result, not provide any response.
+     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
+     * in BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
@@ -101,12 +107,6 @@ public class ByondClient {
         }
     }
 
-    /**
-     * Method to compare actual and expected {@link io.github.spair.byond.message.response.ResponseType}.
-     * @param expected expected response type.
-     * @param actual actual response type.
-     * @throws UnexpectedResponseTypeException signals that expected and actual response types doesn't equals.
-     */
     private void validateResponseType(ResponseType expected, ResponseType actual) throws UnexpectedResponseTypeException {
         if (expected != ResponseType.ANY && expected != actual) {
             throw new UnexpectedResponseTypeException(

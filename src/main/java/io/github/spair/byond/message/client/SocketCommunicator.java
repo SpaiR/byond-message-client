@@ -11,9 +11,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-/**
- * Class to handle all communication things with {@link java.net.Socket}.
- */
 class SocketCommunicator {
 
     private Socket socket;
@@ -49,16 +46,6 @@ class SocketCommunicator {
         }
     }
 
-    /**
-     * Response bytes are stored in {@link java.nio.ByteBuffer} object.
-     * Capacity of it is 10000 bytes to be sure, that everything can be stored.
-     * <br>
-     * Before returning method {@link ByteBuffer#flip()} is invoked to prepare object and change {@link java.nio.ByteBuffer#limit} value.
-     * <br>
-     * Connection closed during {@link java.net.SocketTimeoutException} because there is no way to know,
-     * when BYOND ended to send response.
-     * @return {@link java.nio.ByteBuffer} with response data and additional empty space.
-     */
     ByteBuffer readFromServer() throws ReadResponseException {
         ByteBuffer rawResponseByteBuffer = ByteBuffer.allocate(10000);
 
