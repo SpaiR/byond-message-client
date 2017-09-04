@@ -57,17 +57,35 @@ public class ByondClientTest {
     }
 
     @Test
-    public void sendMessage() {
+    public void testSendMessage() {
         ByondClient client = new ByondClient();
         assertNull(client.sendMessage(
                 new ByondMessage(new ServerAddress("127.0.0.1", 9090), "test", ResponseType.NONE)));
     }
 
     @Test(expected = EmptyResponseException.class)
-    public void sendMessage_EmptyResponse() {
+    public void testSendMessage_EmptyResponse() {
         ByondClient client = new ByondClient();
         client.sendMessage(
                 new ByondMessage(new ServerAddress("127.0.0.1", 9090), "test", ResponseType.ANY));
+    }
+
+    @Test
+    public void testEnsureMessageIsTopic() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ByondClient client = new ByondClient();
+
+        ByondMessage controlMessage = new ByondMessage(null, 0, "?ping");
+        ByondMessage testMessage_1 = new ByondMessage(null, 0, "ping");
+        ByondMessage testMessage_2 = new ByondMessage(null, 0, "?ping");
+
+        Method method = ByondClient.class.getDeclaredMethod("ensureMessageIsTopic", ByondMessage.class);
+        method.setAccessible(true);
+
+        method.invoke(client, testMessage_1);
+        method.invoke(client, testMessage_2);
+
+        assertEquals(controlMessage, testMessage_1);
+        assertEquals(controlMessage, testMessage_2);
     }
 
     @Test

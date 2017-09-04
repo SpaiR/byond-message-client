@@ -89,10 +89,12 @@ public class ByondClient {
      * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
-            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
+            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException
+    {
         boolean closeCommAfterSend = (byondMessage.getExpectedResponse() == ResponseType.NONE);
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, closeCommAfterSend);
 
+        ensureMessageIsTopic(byondMessage);
         comm.sendToServer(messageConverter.convertIntoBytes(byondMessage.getMessage()));
 
         if (closeCommAfterSend) {
@@ -104,6 +106,14 @@ public class ByondClient {
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
 
             return byondResponse;
+        }
+    }
+
+    private void ensureMessageIsTopic(ByondMessage message) {
+        String messageText = message.getMessage();
+
+        if (!messageText.startsWith("?")) {
+            message.setMessage("?" + messageText);
         }
     }
 
