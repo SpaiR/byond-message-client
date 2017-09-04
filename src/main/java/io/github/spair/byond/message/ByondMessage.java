@@ -11,7 +11,14 @@ import io.github.spair.byond.message.response.ResponseType;
  * <br><br>
  * Server address used by {@link io.github.spair.byond.message.client.ByondClient} to know,
  * where message should be send.
+ * <br><br>
+ * Message must contain question mark at start, but it could be omitted,
+ * because it will be added on send process automatically if missing. So "ping" or "?ping" will do the same.
  * <br>
+ * Also, message itself is like a parameters for HTTP request, so multiple messages in one send is possible.
+ * To do it all params should be divided with ";" or "&".
+ * For example: "ping&data=123&status".
+ * <br><br>
  * Expected response type checked on response validation process. If real response doesn't match,
  * exception {@link io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException} will be thrown.
  * Default expected response is {@link io.github.spair.byond.message.response.ResponseType#ANY}.
