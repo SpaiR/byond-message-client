@@ -6,6 +6,7 @@ package io.github.spair.byond.message;
  * Contains server name, which is {@link java.lang.String} and server port as integer value.
  * Server name can be represented as DNS (game.server.com) or IP (123.123.123.123).
  */
+@SuppressWarnings("unused")
 public class ServerAddress {
 
     private String name;
@@ -41,8 +42,7 @@ public class ServerAddress {
 
         ServerAddress that = (ServerAddress) o;
 
-        if (port != that.port) return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        return port == that.port && (name != null ? name.equals(that.name) : that.name == null);
     }
 
     @Override

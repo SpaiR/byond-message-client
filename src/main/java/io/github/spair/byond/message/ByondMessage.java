@@ -16,6 +16,7 @@ import io.github.spair.byond.message.response.ResponseType;
  * exception {@link io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException} will be thrown.
  * Default expected response is {@link io.github.spair.byond.message.response.ResponseType#ANY}.
  */
+@SuppressWarnings("unused")
 public class ByondMessage {
 
     private ServerAddress serverAddress;
@@ -77,10 +78,9 @@ public class ByondMessage {
 
         ByondMessage message1 = (ByondMessage) o;
 
-        if (serverAddress != null ? !serverAddress.equals(message1.serverAddress) : message1.serverAddress != null)
-            return false;
-        if (message != null ? !message.equals(message1.message) : message1.message != null) return false;
-        return expectedResponse == message1.expectedResponse;
+        return (serverAddress != null ? serverAddress.equals(message1.serverAddress) : message1.serverAddress == null)
+                && (message != null ? message.equals(message1.message) : message1.message == null)
+                && expectedResponse == message1.expectedResponse;
     }
 
     @Override

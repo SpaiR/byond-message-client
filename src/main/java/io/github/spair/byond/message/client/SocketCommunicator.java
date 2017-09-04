@@ -46,18 +46,15 @@ class SocketCommunicator {
         }
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     ByteBuffer readFromServer() throws ReadResponseException {
         ByteBuffer rawResponseByteBuffer = ByteBuffer.allocate(10000);
 
         try {
+            // This try/catch block built over timeout exception logic, so no "break" operator in cycle.
             try {
                 while (true) {
                     int inputByte = inputStream.read();
-
-                    if (inputByte == -1) {
-                        break;
-                    }
-
                     rawResponseByteBuffer.put((byte) inputByte);
                 }
             } catch (SocketTimeoutException e) {
