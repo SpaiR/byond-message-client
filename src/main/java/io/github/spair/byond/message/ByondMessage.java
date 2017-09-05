@@ -16,8 +16,8 @@ import io.github.spair.byond.message.response.ResponseType;
  * because it will be added on send process automatically if missing. So "ping" or "?ping" will do the same.
  * <br>
  * Also, message itself is like a parameters for HTTP request, so multiple messages in one send is possible.
- * To do it all params should be divided with ";" or "&".
- * For example: "ping&data=123&status".
+ * To do it all params should be divided with "{@literal ;}" or "{@literal &}".
+ * For example: "{@code ping&data=123&status}".
  * <br><br>
  * Expected response type checked on response validation process. If real response doesn't match,
  * exception {@link io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException} will be thrown.
