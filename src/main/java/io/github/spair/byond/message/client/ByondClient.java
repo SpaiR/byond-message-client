@@ -75,7 +75,7 @@ public class ByondClient {
      * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage)
-            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException {
+            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException {
         return sendMessage(byondMessage, READ_TIMEOUT);
     }
 
