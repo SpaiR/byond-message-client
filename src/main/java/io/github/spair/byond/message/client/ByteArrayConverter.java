@@ -2,7 +2,7 @@ package io.github.spair.byond.message.client;
 
 class ByteArrayConverter {
 
-    byte[] convert(String message) {
+    byte[] convertIntoBytes(String message) {
         return parseMessage(message);
     }
 

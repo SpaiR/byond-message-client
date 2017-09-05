@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 
 class ByondResponseConverter {
 
-    ByondResponse convert(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
+    ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
         Object responseData;
         ResponseType actualResponseType;
 

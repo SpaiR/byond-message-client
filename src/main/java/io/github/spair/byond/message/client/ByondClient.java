@@ -4,6 +4,7 @@ import io.github.spair.byond.message.ByondMessage;
 import io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException;
 import io.github.spair.byond.message.client.exceptions.communicator.HostUnavailableException;
 import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
+import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
 import io.github.spair.byond.message.response.ByondResponse;
 import io.github.spair.byond.message.response.ResponseType;
 
@@ -34,7 +35,9 @@ import java.nio.ByteBuffer;
  */
 public class ByondClient {
 
-    private final MessageConverter messageConverter = new MessageConverter();
+    private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
+    private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
+
     private final int READ_TIMEOUT = 500;
 
     /**
@@ -89,19 +92,19 @@ public class ByondClient {
      * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
-            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException
+            throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException
     {
         boolean closeCommAfterSend = (byondMessage.getExpectedResponse() == ResponseType.NONE);
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, closeCommAfterSend);
 
         ensureMessageIsTopic(byondMessage);
-        comm.sendToServer(messageConverter.convertIntoBytes(byondMessage.getMessage()));
+        comm.sendToServer(byteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
 
         if (closeCommAfterSend) {
             return null;
         } else {
             ByteBuffer rawServerResponse = comm.readFromServer();
-            ByondResponse byondResponse = messageConverter.convertIntoResponse(rawServerResponse);
+            ByondResponse byondResponse = byondResponseConverter.convertIntoResponse(rawServerResponse);
 
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
 
