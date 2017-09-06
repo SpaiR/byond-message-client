@@ -40,7 +40,11 @@ ByondMessage message = new ByondMessage(new ServerAddress("bagil.game.tgstation1
 
 ByondResponse response = client.sendMessage(message);
 ```
-If you print response object you could see something like that: `ByondResponse(responseData=56.0, responseType=FLOAT_NUMBER)`
+If you print response object you could see something like that: 
+```
+ByondResponse(responseData=56.0, responseType=FLOAT_NUMBER)
+```
+Response data is an Object class, so manual casting into Float or String is needed.
 
 #### Additional info:
 * `ByondClient` object can be used with singleton pattern. (Actually, I would recommend that way.)
