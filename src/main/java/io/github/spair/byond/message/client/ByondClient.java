@@ -29,9 +29,7 @@ import java.nio.ByteBuffer;
  * </code></pre>
  *
  * Message sending is based on {@link java.net.Socket} class and process of reading returned data is built on
- * reacting on {@link java.net.SocketTimeoutException}, due to BYOND doesn't send 'end byte'.
- * <br>
- * Response reading timeout could be set up. If it won't, default value, which is <b>500 ms</b>, will be used.
+ * reacting on {@link java.net.SocketTimeoutException}, due to BYOND doesn't send end byte.
  */
 public class ByondClient {
 
