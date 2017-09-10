@@ -6,6 +6,7 @@ package io.github.spair.byond.message.response;
  * Contains response data as {@link java.lang.Object}, so type cast is necessary.
  * Also has actual response type as {@link io.github.spair.byond.message.response.ResponseType}.
  */
+@SuppressWarnings("unused")
 public class ByondResponse {
 
     private Object responseData;
@@ -41,8 +42,8 @@ public class ByondResponse {
 
         ByondResponse that = (ByondResponse) o;
 
-        if (responseData != null ? !responseData.equals(that.responseData) : that.responseData != null) return false;
-        return responseType == that.responseType;
+        return (responseData != null ? responseData.equals(that.responseData) : that.responseData == null)
+                && responseType == that.responseType;
     }
 
     @Override

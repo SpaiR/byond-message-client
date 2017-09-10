@@ -14,6 +14,7 @@ public class InvalidHostException extends RuntimeException {
         this.hostAddress = hostAddress;
     }
 
+    @SuppressWarnings("unused")
     public ServerAddress getHostAddress() {
         return hostAddress;
     }
