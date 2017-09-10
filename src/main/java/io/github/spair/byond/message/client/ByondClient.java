@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * <br>
  * Response reading timeout could be set up. If it won't, default value, which is <b>500 ms</b>, will be used.
  */
-public class ByondClient {
+public class ByondClient { // TODO: Change class to work with modified way of reading response data.
 
     private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
     private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();

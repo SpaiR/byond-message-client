@@ -46,25 +46,59 @@ class SocketCommunicator {
         }
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
+
     ByteBuffer readFromServer() throws ReadResponseException {
-        ByteBuffer rawResponseByteBuffer = ByteBuffer.allocate(10000);
+        if (readTimeout <= 0) {
+            return simpleReadWithoutTimeOut();
+        } else {
+            return readWithTimeOut();
+        }
+    }
+
+    @SuppressWarnings("InfiniteLoopStatement")
+    private ByteBuffer readWithTimeOut() throws ReadResponseException {
+        ByteBuffer responseBuffer = ByteBuffer.allocate(10000);
 
         try {
             // This try/catch block built over timeout exception logic, so no "break" operator in cycle.
             try {
                 while (true) {
                     int inputByte = inputStream.read();
-                    rawResponseByteBuffer.put((byte) inputByte);
+                    responseBuffer.put((byte) inputByte);
                 }
-            } catch (SocketTimeoutException e) {
-                closeConnection();
-            }
+            } catch (SocketTimeoutException ignored) {}
         } catch (Exception e) {
             throw new ReadResponseException(e);
+        } finally {
+            closeConnection();
         }
 
-        return (ByteBuffer) rawResponseByteBuffer.flip();
+        return (ByteBuffer) responseBuffer.flip();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private ByteBuffer simpleReadWithoutTimeOut() throws ReadResponseException {
+        ByteBuffer responseBuffer;
+
+        try {
+            byte[] respInfo = new byte[5];
+            inputStream.read(respInfo);
+
+            byte[] respSizeEncoded = new byte[] {respInfo[2], respInfo[3]};
+            int respSizeDecoded = (ByteBuffer.wrap(respSizeEncoded).getShort() - 1);
+
+            byte[] respData = new byte[respSizeDecoded];
+            inputStream.read(respData);
+
+            responseBuffer = ByteBuffer.allocate(respInfo.length + respData.length);
+            responseBuffer.put(respInfo).put(respData);
+        } catch (Exception e) {
+            throw new ReadResponseException(e);
+        } finally {
+            closeConnection();
+        }
+
+        return (ByteBuffer) responseBuffer.flip();
     }
 
     private void openConnection() throws HostUnavailableException, OpenConnectionException {
