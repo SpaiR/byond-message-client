@@ -52,6 +52,11 @@ class SocketCommunicator {
 
 
     ByteBuffer readFromServer() throws ReadResponseException {
+        if (socket == null) {
+            throw new ReadResponseException(
+                    new RuntimeException("Connection to server isn't established. Reading is unavailable."));
+        }
+
         if (readTimeout > 0) {
             return readWithTimeOut();
         } else {
@@ -121,9 +126,7 @@ class SocketCommunicator {
 
     private void closeConnection() throws CloseConnectionException {
         try {
-            if (socket != null) {
-                socket.close();
-            }
+            socket.close();
         } catch (Exception e) {
             throw new CloseConnectionException(e);
         }
