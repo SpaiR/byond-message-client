@@ -20,13 +20,17 @@ class SocketCommunicator {
 
     private ServerAddress serverAddress;
 
-    private int readTimeout;
+    // Default timeout wait is 1 second.
+    private int readTimeout = 1000;
     private boolean closeAfterSend;
 
     SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean closeAfterSend) {
         this.serverAddress = serverAddress;
-        this.readTimeout = readTimeout;
         this.closeAfterSend = closeAfterSend;
+
+        if (readTimeout > 0) {
+            this.readTimeout = readTimeout;
+        }
     }
 
     void sendToServer(byte[] bytes) throws HostUnavailableException, SendMessageException {
@@ -48,10 +52,10 @@ class SocketCommunicator {
 
 
     ByteBuffer readFromServer() throws ReadResponseException {
-        if (readTimeout <= 0) {
-            return simpleReadWithoutTimeOut();
-        } else {
+        if (readTimeout > 0) {
             return readWithTimeOut();
+        } else {
+            return simpleReadWithoutTimeOut();
         }
     }
 
@@ -78,20 +82,22 @@ class SocketCommunicator {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private ByteBuffer simpleReadWithoutTimeOut() throws ReadResponseException {
-        ByteBuffer responseBuffer;
+        ByteBuffer responseBuffer = ByteBuffer.allocate(0);
 
         try {
-            byte[] respInfo = new byte[5];
-            inputStream.read(respInfo);
+            // This try/catch block is to handle cases, when BYOND doesn't return anything.
+            try {
+                byte[] respInfo = new byte[5];
+                inputStream.read(respInfo);
 
-            byte[] respSizeEncoded = new byte[] {respInfo[2], respInfo[3]};
-            int respSizeDecoded = (ByteBuffer.wrap(respSizeEncoded).getShort() - 1);
+                int respSize = (ByteBuffer.wrap(new byte[]{respInfo[2], respInfo[3]}).getShort() - 1);
 
-            byte[] respData = new byte[respSizeDecoded];
-            inputStream.read(respData);
+                byte[] respData = new byte[respSize];
+                inputStream.read(respData);
 
-            responseBuffer = ByteBuffer.allocate(respInfo.length + respData.length);
-            responseBuffer.put(respInfo).put(respData);
+                responseBuffer = ByteBuffer.allocate(respInfo.length + respData.length);
+                responseBuffer.put(respInfo).put(respData);
+            } catch (SocketTimeoutException ignored) {}
         } catch (Exception e) {
             throw new ReadResponseException(e);
         } finally {
@@ -104,7 +110,6 @@ class SocketCommunicator {
     private void openConnection() throws HostUnavailableException, OpenConnectionException {
         try {
             socket = createSocket();
-
             outputStream = new DataOutputStream(socket.getOutputStream());
             inputStream = new BufferedInputStream(socket.getInputStream());
         } catch (HostUnavailableException e) {
@@ -116,7 +121,9 @@ class SocketCommunicator {
 
     private void closeConnection() throws CloseConnectionException {
         try {
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
         } catch (Exception e) {
             throw new CloseConnectionException(e);
         }

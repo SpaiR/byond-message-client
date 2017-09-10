@@ -33,12 +33,10 @@ import java.nio.ByteBuffer;
  * <br>
  * Response reading timeout could be set up. If it won't, default value, which is <b>500 ms</b>, will be used.
  */
-public class ByondClient { // TODO: Change class to work with modified way of reading response data.
+public class ByondClient {
 
     private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
     private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
-
-    private final int READ_TIMEOUT = 500;
 
     /**
      * Static method create {@link io.github.spair.byond.message.client.ByondClient} instance
@@ -58,15 +56,17 @@ public class ByondClient { // TODO: Change class to work with modified way of re
      */
     public void sendCommand(ByondMessage byondMessage) throws HostUnavailableException {
         byondMessage.setExpectedResponse(ResponseType.NONE);
-        sendMessage(byondMessage, READ_TIMEOUT);
+        sendMessage(byondMessage, 0);
     }
 
     /**
      * Send message to BYOND server with waiting for response.
-     * Similar to {@link #sendMessage(ByondMessage, int)} but without second argument,
-     * so as reading timeout <b>500 ms</b> used.
+     * <br>
+     * It is blocking method. Waiting time creates from connection lag and sending/reading response time.
+     * Unlike {@link ByondClient#sendMessage(ByondMessage, int)} additional wait from timeout won't be added,
+     * but method still guarantee, that whole data will be got.
      *
-     * @param byondMessage mesasge to send.
+     * @param byondMessage message to send.
      * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
      * or as null, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
@@ -76,11 +76,20 @@ public class ByondClient { // TODO: Change class to work with modified way of re
      */
     public ByondResponse sendMessage(ByondMessage byondMessage)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException {
-        return sendMessage(byondMessage, READ_TIMEOUT);
+        return sendMessage(byondMessage, 0);
     }
 
     /**
-     * Send message to BYOND server with waiting for response.
+     * Send message to BYOND server with waiting for response and custom timeout.
+     * <br>
+     * It is blocking method. Waiting time creates from connection lag, sending time and reading timeout.
+     * If timeout expired before response fully read data will be incomplete, but still exist.
+     * <br>
+     * Zero and less timeout value means, that actual read will be performed like in {@link ByondClient#sendMessage(ByondMessage)},
+     * without any timeout at all.
+     * <br>
+     * Method not recommended to be used, due to extra wait time from timeout,
+     * and shredded data if timeout is to low.
      *
      * @param byondMessage message to send.
      * @param readTimeout timeout time to read response.

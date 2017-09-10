@@ -20,7 +20,7 @@ class ByondResponseConverter {
             actualResponseType = pullOutActualResponseType(byteBuffer);
             responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
         } else {
-            throw new EmptyResponseException("Response length is zero when ResponseType not NONE.");
+            throw new EmptyResponseException("Response length is zero when ResponseType is not NONE.");
         }
 
         return new ByondResponse(responseData, actualResponseType);
