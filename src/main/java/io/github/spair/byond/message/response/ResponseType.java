@@ -8,9 +8,9 @@ package io.github.spair.byond.message.response;
 public enum ResponseType {
 
     /**
-     * No response is expected. That means, that client will only send message, without waiting for response.
-     * <br>
-     * <b>Used only in {@link io.github.spair.byond.message.ByondMessage}</b>.
+     * In case of using in {@link io.github.spair.byond.message.ByondMessage} means,
+     * that no response is expected and method will return empty {@link io.github.spair.byond.message.response.ByondResponse} instance.
+     * As a result, in {@link io.github.spair.byond.message.response.ByondResponse} it means, that 'responseData' is null.
      */
     NONE,
 

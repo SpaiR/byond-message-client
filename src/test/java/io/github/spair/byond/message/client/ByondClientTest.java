@@ -83,7 +83,9 @@ public class ByondClientTest {
         ByondResponse response = client.sendMessage(
                 new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
 
-        assertNull(response);
+        assertNotNull(response);
+        assertNull(response.getResponseData());
+        assertEquals(ResponseType.NONE, response.getResponseType());
     }
 
     @Test(expected = EmptyResponseException.class)

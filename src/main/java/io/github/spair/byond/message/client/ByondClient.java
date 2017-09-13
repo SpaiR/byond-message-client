@@ -66,7 +66,7 @@ public class ByondClient {
      *
      * @param byondMessage message to send.
      * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
-     * or as null, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
+     * or empty response instance, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
      * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
@@ -92,7 +92,7 @@ public class ByondClient {
      * @param byondMessage message to send.
      * @param readTimeout timeout time to read response.
      * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
-     * or as null, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
+     * or empty response instance, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
      * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
      * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
@@ -113,7 +113,7 @@ public class ByondClient {
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
             return byondResponse;
         } else {
-            return null;
+            return new ByondResponse(null, ResponseType.NONE);
         }
     }
 
