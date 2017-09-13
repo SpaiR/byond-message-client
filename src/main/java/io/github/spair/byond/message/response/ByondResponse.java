@@ -1,8 +1,7 @@
 package io.github.spair.byond.message.response;
 
 /**
- * Container for converted BYOND server response.
- * <br>
+ * Container for converted BYOND server response.<br>
  * Contains response data as {@link java.lang.Object}, so type cast is necessary.
  * Also has actual response type as {@link io.github.spair.byond.message.response.ResponseType}.
  */

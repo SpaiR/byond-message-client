@@ -11,10 +11,8 @@ import io.github.spair.byond.message.response.ResponseType;
 import java.nio.ByteBuffer;
 
 /**
- * Class to send string messages from Java program to BYOND server.
- * <br>
- * Could be created by no args constructor or with {@link ByondClient#create()} method.
- * <br><br>
+ * <p>Class to send string messages from Java program to BYOND server.</p>
+ *
  * Simple usage example:
  * <pre><code>
  * ByondMessage messageToSend = new ByondMessage(new ServerAddress("bagil.game.tgstation13.org", 2337), "?ping");
@@ -23,13 +21,11 @@ import java.nio.ByteBuffer;
  * ByondResponse response = client.sendMessage(messageToSend);
  * </code></pre>
  *
- * Sending process could be made in one line style:
+ * This could be rewritten in a next way:
  * <pre><code>
- *  ByondResponse response = ByondClient.create().sendMessage(messageToSend);
+ * ByondMessage messageToSend = new ByondMessage("bagil.game.tgstation13.org", 2337, "ping");
+ * ByondResponse response = ByondClient.create().sendMessage(messageToSend);
  * </code></pre>
- *
- * Message sending is based on {@link java.net.Socket} class and process of reading returned data is built on
- * reacting on {@link java.net.SocketTimeoutException}, due to BYOND doesn't send end byte.
  */
 public class ByondClient {
 
@@ -37,20 +33,21 @@ public class ByondClient {
     private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
 
     /**
-     * Static method create {@link io.github.spair.byond.message.client.ByondClient} instance
-     * without constructor.
+     * Static method to create {@link io.github.spair.byond.message.client.ByondClient} instance
+     * without calling of constructor.
      *
-     * @return new {@link io.github.spair.byond.message.client.ByondClient} instance.
+     * @return {@link io.github.spair.byond.message.client.ByondClient} instance.
      */
     public static ByondClient create() {
         return new ByondClient();
     }
 
     /**
-     * Send message to BYOND server without waiting for response.
+     * Sends message to BYOND server without waiting for response.
      *
-     * @param byondMessage message to send.
-     * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
+     * @param byondMessage message object to send.
+     *
+     * @throws HostUnavailableException signals that requested server unavailable to connect.
      */
     public void sendCommand(ByondMessage byondMessage) throws HostUnavailableException {
         byondMessage.setExpectedResponse(ResponseType.NONE);
@@ -58,19 +55,25 @@ public class ByondClient {
     }
 
     /**
-     * Send message to BYOND server with waiting for response.
-     * <br>
-     * It is blocking method. Waiting time creates from connection lag and sending/reading response time.
-     * Unlike {@link ByondClient#sendMessage(ByondMessage, int)} additional wait from timeout won't be added,
-     * but method still guarantee, that whole data will be got.
+     * <p>Sends message to BYOND server with wait and returning of response.</p>
      *
-     * @param byondMessage message to send.
-     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
-     * or empty response instance, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
-     * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
-     * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
-     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
-     * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
+     * <p>Method is blocking. Waiting time created from connection lag and sending/reading response time.
+     * Unlike {@link ByondClient#sendMessage(ByondMessage, int)} additional wait from timeout won't be added,
+     * but method still guarantee, that whole data will be got.</p>
+     *
+     * @param byondMessage message object to send.
+     *
+     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
+     *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
+     *         then response instance will has 'null' in 'responseData' field
+     *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
+     *
+     * @throws HostUnavailableException signals that requested server unavailable to connect.
+     * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual got.
+     * @throws EmptyResponseException thrown if response was empty, but user waiting for something.
+     *                                Cause could be in BYOND server itself.
+     *                                Typically, it doesn't handle message which was send and, as a result, not provide any response.
+     * @throws UnknownResponseException signals that response was caught, but it encoded into unknown format.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException {
@@ -78,25 +81,30 @@ public class ByondClient {
     }
 
     /**
-     * Send message to BYOND server with waiting for response and custom timeout.
-     * <br>
-     * It is blocking method. Waiting time creates from connection lag, sending time and reading timeout.
-     * If timeout expired before response fully read data will be incomplete, but still exist.
-     * <br>
-     * Zero and less timeout value means, that actual read will be performed like in {@link ByondClient#sendMessage(ByondMessage)},
-     * without any timeout at all.
-     * <br>
-     * Method not recommended to be used, due to extra wait time from timeout,
-     * and shredded data if timeout is to low.
+     * <p>Sends message to BYOND server with wait and of returning response. Custom timeout wait could be insert.</p>
      *
-     * @param byondMessage message to send.
+     * <p>Method is blocking. Waiting time created from connection lag, sending time and reading timeout.
+     * If timeout expired before response fully read data will be incomplete, but still exist.
+     * Zero and less timeout value means, that actual read will be performed like in {@link ByondClient#sendMessage(ByondMessage)},
+     * without any custom timeout at all.</p>
+     *
+     * <p>Method is <b>not recommended</b> to be used, due to extra wait time from timeout,
+     * and possibility of shredded data if timeout is to low.</p>
+     *
+     * @param byondMessage message object to send.
      * @param readTimeout timeout time to read response.
-     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}
-     * or empty response instance, if message response type was {@link io.github.spair.byond.message.response.ResponseType#NONE}.
-     * @throws HostUnavailableException signals that requested server unavailable to connect. Offline or some other reason.
-     * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual.
-     * @throws EmptyResponseException thrown if response was empty, but user wait for something. Cause could be in
-     * BYOND server itself. Typical, it doesn't handle message which was send and, as a result, not provide any response.
+     *
+     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
+     *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
+     *         then response instance will has 'null' in 'responseData' field
+     *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
+     *
+     * @throws HostUnavailableException signals that requested server unavailable to connect.
+     * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual got.
+     * @throws EmptyResponseException thrown if response was empty, but user waiting for something.
+     *                                Cause could be in BYOND server itself.
+     *                                Typically, it doesn't handle message which was send and, as a result, not provide any response.
+     * @throws UnknownResponseException signals that response was caught, but it encoded into unknown format.
      */
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException

@@ -1,10 +1,9 @@
 package io.github.spair.byond.message;
 
 /**
- * Wrapper for server address.
- * <br>
+ * Wrapper for server address.<br>
  * Contains server name, which is {@link java.lang.String} and server port as integer value.
- * Server name can be represented as DNS (game.server.com) or IP (123.123.123.123).
+ * Server name can be represented as DNS (game.server.com) or IP (1.2.3.4).
  */
 @SuppressWarnings("unused")
 public class ServerAddress {
