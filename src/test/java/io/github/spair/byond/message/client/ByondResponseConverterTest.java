@@ -6,7 +6,6 @@ import io.github.spair.byond.message.response.ByondResponse;
 import io.github.spair.byond.message.response.ResponseType;
 import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
@@ -15,12 +14,12 @@ import static org.junit.Assert.assertEquals;
 public class ByondResponseConverterTest {
 
     // 57.0f
-    private byte[] floatInBytes = new byte[]{0, -125, 0, 5, 42, 0, 0, 100, 66, 0, 0, 0, 0};
+    private final byte[] floatInBytes = new byte[]{0, -125, 0, 5, 42, 0, 0, 100, 66, 0, 0, 0, 0};
     // Space Station 13
-    private byte[] stringInBytes = new byte[]{0, -125, 4, 90, 6, 83, 112, 97, 99, 101, 32, 83, 116, 97, 116, 105, 111, 110, 32, 49, 51};
+    private final byte[] stringInBytes = new byte[]{0, -125, 4, 90, 6, 83, 112, 97, 99, 101, 32, 83, 116, 97, 116, 105, 111, 110, 32, 49, 51};
 
     @Test
-    public void testConvert_WithFloat() {
+    public void testConvertIntoResponse_WithFloat() {
         ByondResponseConverter converter = new ByondResponseConverter();
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(floatInBytes);
@@ -30,7 +29,7 @@ public class ByondResponseConverterTest {
     }
 
     @Test
-    public void testConvert_WithString() {
+    public void testConvertIntoResponse_WithString() {
         ByondResponseConverter converter = new ByondResponseConverter();
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(stringInBytes);
@@ -40,7 +39,7 @@ public class ByondResponseConverterTest {
     }
 
     @Test(expected = EmptyResponseException.class)
-    public void testConvert_EmptyResponse() {
+    public void testConvertIntoResponse_EmptyResponseException() {
         ByondResponseConverter converter = new ByondResponseConverter();
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[0]);
 
@@ -48,7 +47,7 @@ public class ByondResponseConverterTest {
     }
 
     @Test(expected = UnknownResponseException.class)
-    public void testConvert_UnknownResponse() {
+    public void testConvertIntoResponse_UnknownResponseException() {
         ByondResponseConverter converter = new ByondResponseConverter();
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
 
@@ -56,7 +55,7 @@ public class ByondResponseConverterTest {
     }
 
     @Test
-    public void testSanitizeRawBuffer() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testSanitizeRawBuffer() throws Exception {
         ByondResponseConverter converter = new ByondResponseConverter();
 
         Method method = ByondResponseConverter.class.getDeclaredMethod("sanitizeRawByteBuffer", ByteBuffer.class);

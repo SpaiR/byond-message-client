@@ -7,6 +7,7 @@ import io.github.spair.byond.message.response.ResponseType;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 
 class ByondResponseConverter {
 
@@ -66,13 +67,7 @@ class ByondResponseConverter {
     }
 
     private String createStringTypeResponse(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-
-        for (byte b : bytes) {
-            sb.append((char) b);
-        }
-
-        return sb.toString();
+        return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
     private ByteBuffer sanitizeRawByteBuffer(ByteBuffer rawBuffer) {

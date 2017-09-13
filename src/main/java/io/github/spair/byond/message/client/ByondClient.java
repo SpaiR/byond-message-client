@@ -101,21 +101,19 @@ public class ByondClient {
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException
     {
+        ensureMessageIsTopic(byondMessage);
+
         boolean closeCommAfterSend = (byondMessage.getExpectedResponse() == ResponseType.NONE);
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, closeCommAfterSend);
 
-        ensureMessageIsTopic(byondMessage);
-        comm.sendToServer(byteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
+        ByteBuffer rawServerResponse = comm.communicate(byteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
 
-        if (closeCommAfterSend) {
-            return null;
-        } else {
-            ByteBuffer rawServerResponse = comm.readFromServer();
+        if (!closeCommAfterSend) {
             ByondResponse byondResponse = byondResponseConverter.convertIntoResponse(rawServerResponse);
-
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
-
             return byondResponse;
+        } else {
+            return null;
         }
     }
 

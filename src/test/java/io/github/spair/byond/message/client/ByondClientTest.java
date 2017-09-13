@@ -5,35 +5,37 @@ import io.github.spair.byond.message.ServerAddress;
 import io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException;
 import io.github.spair.byond.message.client.exceptions.communicator.HostUnavailableException;
 import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
+import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
+import io.github.spair.byond.message.response.ByondResponse;
 import io.github.spair.byond.message.response.ResponseType;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 
 import static org.junit.Assert.*;
 
 public class ByondClientTest {
 
-    private ServerSocket serverSocket;
+    private static TestSocketServer serverSocket;
 
-    @Before
-    public void setUp() {
-        try {
-            serverSocket = new ServerSocket(9090, 0, InetAddress.getByName(null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static ServerAddress VALID_ADDRESS;
+    private static ServerAddress INVALID_ADDRESS;
+
+    @BeforeClass
+    public static void setUpOnce() throws Exception {
+        serverSocket = new TestSocketServer(9090);
+        serverSocket.start();
+
+        VALID_ADDRESS = new ServerAddress("127.0.0.1", 9090);
+        INVALID_ADDRESS = new ServerAddress("127.0.0.1", 12345);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        serverSocket.close();
+    @AfterClass
+    public static void tearDownOnce() throws Exception {
+        serverSocket.stop();
     }
 
     @Test
@@ -45,36 +47,75 @@ public class ByondClientTest {
     }
 
     @Test
-    public void testSendCommand() {
+    public void testSendCommand() throws Exception {
         ByondClient client = new ByondClient();
-        client.sendCommand(new ByondMessage(new ServerAddress("127.0.0.1", 9090), "test"));
+        client.sendCommand(new ByondMessage(VALID_ADDRESS, "test"));
+
     }
 
     @Test(expected = HostUnavailableException.class)
-    public void testSendCommand_HostUnavailable() {
+    public void testSendCommand_HostUnavailableException() {
         ByondClient client = new ByondClient();
-        client.sendCommand(new ByondMessage(new ServerAddress("127.0.0.1", 8080), "test"));
+        client.sendCommand(new ByondMessage(INVALID_ADDRESS, "test"));
     }
 
     @Test
-    public void testSendMessage() {
+    public void testSendMessage_NumberResponse() throws Exception {
         ByondClient client = new ByondClient();
-        assertNull(client.sendMessage(
-                new ByondMessage(new ServerAddress("127.0.0.1", 9090), "test", ResponseType.NONE)));
+        ByondResponse response = client.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST));
+
+        assertEquals(TestSocketServer.NUMBER_VALUE, response.getResponseData());
+        assertEquals(ResponseType.FLOAT_NUMBER, response.getResponseType());
+    }
+
+    @Test
+    public void testSendMessage_TextResponse() {
+        ByondClient client = new ByondClient();
+        ByondResponse response = client.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST));
+
+        assertEquals(TestSocketServer.TEXT_VALUE, response.getResponseData());
+        assertEquals(ResponseType.STRING, response.getResponseType());
+    }
+
+    @Test
+    public void testSendMessage_NoneResponse() {
+        ByondClient client = new ByondClient();
+        ByondResponse response = client.sendMessage(
+                new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
+
+        assertNull(response);
     }
 
     @Test(expected = EmptyResponseException.class)
-    public void testSendMessage_EmptyResponse() {
+    public void testSendMessage_EmptyResponseException() {
         ByondClient client = new ByondClient();
-        client.sendMessage(
-                new ByondMessage(new ServerAddress("127.0.0.1", 9090), "test", ResponseType.ANY));
+        client.sendMessage(new ByondMessage(VALID_ADDRESS, "test", ResponseType.ANY));
+    }
+
+    @Test(expected = UnexpectedResponseTypeException.class)
+    public void testSendMessage_UnexpectedResponseTypeException() {
+        ByondClient client = new ByondClient();
+        client.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.FLOAT_NUMBER));
+    }
+
+    @Test(expected = UnknownResponseException.class)
+    public void testSendMessage_UnknownResponseException() {
+        ByondClient client = new ByondClient();
+        client.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.UNKNOWN_REQUEST));
     }
 
     @Test
-    public void testEnsureMessageIsTopic() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testSendMessage_WithTimeout() {
+        ByondClient client = new ByondClient();
+        client.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST), 500);
+    }
+
+    @Test
+    public void testEnsureMessageIsTopic() throws Exception {
         ByondClient client = new ByondClient();
 
         ByondMessage controlMessage = new ByondMessage(null, 0, "?ping");
+
         ByondMessage testMessage_1 = new ByondMessage(null, 0, "ping");
         ByondMessage testMessage_2 = new ByondMessage(null, 0, "?ping");
 
@@ -89,7 +130,7 @@ public class ByondClientTest {
     }
 
     @Test
-    public void testValidateResponseType() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testValidateResponseType() throws Exception {
         ByondClient client = new ByondClient();
 
         Method method = ByondClient.class.getDeclaredMethod("validateResponseType", ResponseType.class, ResponseType.class);
@@ -99,8 +140,7 @@ public class ByondClientTest {
     }
 
     @Test
-    public void testValidateResponseType_WithAnyType()
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testValidateResponseType_WithAnyType() throws Exception {
         ByondClient client = new ByondClient();
 
         Method method = ByondClient.class.getDeclaredMethod("validateResponseType", ResponseType.class, ResponseType.class);
@@ -110,7 +150,7 @@ public class ByondClientTest {
     }
 
     @Test(expected = UnexpectedResponseTypeException.class)
-    public void testValidateResponseType_UnexpectedResponseType() throws NoSuchMethodException, IllegalAccessException {
+    public void testValidateResponseType_UnexpectedResponseTypeException() throws Exception {
         ByondClient client = new ByondClient();
 
         Method method = ByondClient.class.getDeclaredMethod("validateResponseType", ResponseType.class, ResponseType.class);
