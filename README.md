@@ -22,9 +22,7 @@ Library is deployed and provided with Maven Central and JCenter repositories, so
 ```
 #### build.gradle:
 ```
-dependencies {
-    compile 'io.github.spair:byond-message-client:1.1'
-}
+compile 'io.github.spair:byond-message-client:1.1'
 ```
 
 ## Usage
