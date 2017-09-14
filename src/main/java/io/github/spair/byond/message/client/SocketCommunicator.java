@@ -126,11 +126,10 @@ class SocketCommunicator {
     }
 
     private Socket createSocket() throws Exception {
-        Socket socket;
-
         try {
-            socket = new Socket(serverAddress.getName(), serverAddress.getPort());
+            Socket socket = new Socket(serverAddress.getName(), serverAddress.getPort());
             socket.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
+            return socket;
         } catch (ConnectException e) {
             throw new HostUnavailableException(
                     "Cannot to connect to host. Probably it's offline. Address: " +
@@ -139,7 +138,5 @@ class SocketCommunicator {
             throw new InvalidHostException(
                     "Unknown host to connect. Please, check entered host address and port", serverAddress);
         }
-
-        return socket;
     }
 }
