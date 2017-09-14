@@ -21,15 +21,15 @@ class SocketCommunicator {
     private ServerAddress serverAddress;
 
     private int readTimeout;
-    private boolean closeAfterSend;
+    private boolean isSendOnly;
 
     // Default timeout is 1 second or 1000 ms.
     private static final int DEFAULT_TIMEOUT = 1000;
 
-    SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean closeAfterSend) {
+    SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean isSendOnly) {
         this.serverAddress = serverAddress;
         this.readTimeout = readTimeout;
-        this.closeAfterSend = closeAfterSend;
+        this.isSendOnly = isSendOnly;
     }
 
     ByteBuffer communicate(byte[] bytes) throws HostUnavailableException, CommunicationException {
@@ -37,7 +37,7 @@ class SocketCommunicator {
             try {
                 openConnection();
                 sendToServer(bytes);
-                return closeAfterSend ? null : readFromServer();
+                return isSendOnly ? null : readFromServer();
             } finally {
                 closeConnection();
             }
