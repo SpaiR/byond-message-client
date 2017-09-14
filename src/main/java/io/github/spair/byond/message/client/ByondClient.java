@@ -29,9 +29,6 @@ import java.nio.ByteBuffer;
  */
 public class ByondClient {
 
-    private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
-    private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
-
     /**
      * Static method to create {@link io.github.spair.byond.message.client.ByondClient} instance
      * without calling of constructor.
@@ -114,10 +111,10 @@ public class ByondClient {
         boolean closeCommAfterSend = (byondMessage.getExpectedResponse() == ResponseType.NONE);
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, closeCommAfterSend);
 
-        ByteBuffer rawServerResponse = comm.communicate(byteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
+        ByteBuffer rawServerResponse = comm.communicate(ByteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
 
         if (!closeCommAfterSend) {
-            ByondResponse byondResponse = byondResponseConverter.convertIntoResponse(rawServerResponse);
+            ByondResponse byondResponse = ByondResponseConverter.convertIntoResponse(rawServerResponse);
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
             return byondResponse;
         } else {

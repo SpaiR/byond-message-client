@@ -20,38 +20,32 @@ public class ByondResponseConverterTest {
 
     @Test
     public void testConvertIntoResponse_WithFloat() {
-        ByondResponseConverter converter = new ByondResponseConverter();
-
         ByteBuffer byteBuffer = ByteBuffer.wrap(floatInBytes);
         ByondResponse expectedByondResponse = new ByondResponse(57.0f, ResponseType.FLOAT_NUMBER);
 
-        assertEquals(expectedByondResponse, converter.convertIntoResponse(byteBuffer));
+        assertEquals(expectedByondResponse, ByondResponseConverter.convertIntoResponse(byteBuffer));
     }
 
     @Test
     public void testConvertIntoResponse_WithString() {
-        ByondResponseConverter converter = new ByondResponseConverter();
-
         ByteBuffer byteBuffer = ByteBuffer.wrap(stringInBytes);
         ByondResponse expectedByondResponse = new ByondResponse("Space Station 13", ResponseType.STRING);
 
-        assertEquals(expectedByondResponse, converter.convertIntoResponse(byteBuffer));
+        assertEquals(expectedByondResponse, ByondResponseConverter.convertIntoResponse(byteBuffer));
     }
 
     @Test(expected = EmptyResponseException.class)
     public void testConvertIntoResponse_EmptyResponseException() {
-        ByondResponseConverter converter = new ByondResponseConverter();
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[0]);
 
-        converter.convertIntoResponse(byteBuffer);
+        ByondResponseConverter.convertIntoResponse(byteBuffer);
     }
 
     @Test(expected = UnknownResponseException.class)
     public void testConvertIntoResponse_UnknownResponseException() {
-        ByondResponseConverter converter = new ByondResponseConverter();
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
 
-        converter.convertIntoResponse(byteBuffer);
+        ByondResponseConverter.convertIntoResponse(byteBuffer);
     }
 
     @Test

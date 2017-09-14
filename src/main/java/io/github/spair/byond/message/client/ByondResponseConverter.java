@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 class ByondResponseConverter {
 
-    ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
+    static ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
         Object responseData;
         ResponseType actualResponseType;
 
@@ -27,7 +27,7 @@ class ByondResponseConverter {
         return new ByondResponse(responseData, actualResponseType);
     }
 
-    private ResponseType pullOutActualResponseType(ByteBuffer data) throws UnknownResponseException {
+    private static ResponseType pullOutActualResponseType(ByteBuffer data) throws UnknownResponseException {
         ResponseType responseType;
         String responseHexString = Integer.toHexString(data.get(4));
 
@@ -46,7 +46,7 @@ class ByondResponseConverter {
         return responseType;
     }
 
-    private Object pullOutResponseData(ByteBuffer data, ResponseType responseType) {
+    private static Object pullOutResponseData(ByteBuffer data, ResponseType responseType) {
         byte[] responseBytes = data.array();
         Object responseData = null;
 
@@ -62,15 +62,15 @@ class ByondResponseConverter {
         return responseData;
     }
 
-    private Float createNumberTypeResponse(byte[] bytes) {
+    private static Float createNumberTypeResponse(byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
-    private String createStringTypeResponse(byte[] bytes) {
+    private static String createStringTypeResponse(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
-    private ByteBuffer sanitizeRawByteBuffer(ByteBuffer rawBuffer) {
+    private static ByteBuffer sanitizeRawByteBuffer(ByteBuffer rawBuffer) {
         int responseSize = rawBuffer.limit();
         ByteBuffer sanitizedBuffer = ByteBuffer.allocate(responseSize - 5);
 

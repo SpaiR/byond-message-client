@@ -2,7 +2,7 @@ package io.github.spair.byond.message.client;
 
 class ByteArrayConverter {
 
-    byte[] convertIntoBytes(String message) {
+    static byte[] convertIntoBytes(String message) {
         char messageSize = (char) (message.getBytes().length + 6);
 
         char[] firstPart = new char[] {0x00, 0x83, 0x00, messageSize, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -12,7 +12,7 @@ class ByteArrayConverter {
         return convertToByteArray(concatAllParts(firstPart, messagePart, lastPart));
     }
 
-    private char[] concatAllParts(char[]... arrays) {
+    private static char[] concatAllParts(char[]... arrays) {
         int resultLength = 0;
         for (char[] array : arrays) {
             resultLength += array.length;
@@ -29,7 +29,7 @@ class ByteArrayConverter {
         return result;
     }
 
-    private byte[] convertToByteArray(char[] charArray) {
+    private static byte[] convertToByteArray(char[] charArray) {
         byte[] result = new byte[charArray.length];
 
         for (int i = 0; i < result.length; i++) {
