@@ -57,28 +57,19 @@ class TestSocketServer {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private char[] readRequest(Socket socket) {
-        char[] chars = null;
+    private char[] readRequest(Socket socket) throws IOException {
+        char[] requestChars = new char[100];
 
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            chars = new char[100];
-            reader.read(chars);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        reader.read(requestChars);
 
-        return chars;
+        return requestChars;
     }
 
-    private void writeResponse(Socket socket, char[] requestChars) {
-        try {
-            OutputStream os = socket.getOutputStream();
-            os.write(getResponse(requestChars));
-            os.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void writeResponse(Socket socket, char[] requestChars) throws IOException {
+        OutputStream os = socket.getOutputStream();
+        os.write(getResponse(requestChars));
+        os.flush();
     }
 
     private byte[] getResponse(char[] chars) {
