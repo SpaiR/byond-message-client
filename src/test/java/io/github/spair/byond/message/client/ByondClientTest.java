@@ -113,25 +113,6 @@ public class ByondClientTest {
     }
 
     @Test
-    public void testEnsureMessageIsTopic() throws Exception {
-        ByondClient client = new ByondClient();
-
-        ByondMessage controlMessage = new ByondMessage(null, 0, "?ping");
-
-        ByondMessage testMessage_1 = new ByondMessage(null, 0, "ping");
-        ByondMessage testMessage_2 = new ByondMessage(null, 0, "?ping");
-
-        Method method = ByondClient.class.getDeclaredMethod("ensureMessageIsTopic", ByondMessage.class);
-        method.setAccessible(true);
-
-        method.invoke(client, testMessage_1);
-        method.invoke(client, testMessage_2);
-
-        assertEquals(controlMessage, testMessage_1);
-        assertEquals(controlMessage, testMessage_2);
-    }
-
-    @Test
     public void testValidateResponseType() throws Exception {
         ByondClient client = new ByondClient();
 

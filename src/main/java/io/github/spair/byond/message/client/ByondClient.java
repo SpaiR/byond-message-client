@@ -11,9 +11,9 @@ import io.github.spair.byond.message.response.ResponseType;
 import java.nio.ByteBuffer;
 
 /**
- * <p>Class to send string messages from Java program to BYOND server.</p>
+ * <p>Class to send string messages from Java program to BYOND server.
  *
- * Simple usage example:
+ * <p>Simple usage example:
  * <pre><code>
  * ByondMessage messageToSend = new ByondMessage(new ServerAddress("bagil.game.tgstation13.org", 2337), "?ping");
  *
@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
  * ByondResponse response = client.sendMessage(messageToSend);
  * </code></pre>
  *
- * This could be rewritten in a next way:
+ * This, with the same result, could be rewritten in the next way:
  * <pre><code>
  * ByondMessage messageToSend = new ByondMessage("bagil.game.tgstation13.org", 2337, "ping");
  * ByondResponse response = ByondClient.create().sendMessage(messageToSend);
@@ -52,15 +52,15 @@ public class ByondClient {
     }
 
     /**
-     * <p>Sends message to BYOND server with wait and returning of response.</p>
+     * <p>Sends message to BYOND server with wait and returning of response.
      *
      * <p>Method is blocking. Waiting time created from connection lag and sending/reading response time.
      * Unlike {@link ByondClient#sendMessage(ByondMessage, int)} additional wait from timeout won't be added,
-     * but method still guarantee, that whole data will be got.</p>
+     * but method still guarantee, that whole data will be got.
      *
      * @param byondMessage message object to send.
      *
-     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
+     * @return Response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
      *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
      *         then response instance will has 'null' in 'responseData' field
      *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
@@ -78,20 +78,20 @@ public class ByondClient {
     }
 
     /**
-     * <p>Sends message to BYOND server with wait and of returning response. Custom timeout wait could be insert.</p>
+     * <p>Sends message to BYOND server with wait and of returning response. Custom timeout wait could be insert.
      *
      * <p>Method is blocking. Waiting time created from connection lag, sending time and reading timeout.
      * If timeout expired before response fully read data will be incomplete, but still exist.
      * Zero and less timeout value means, that actual read will be performed like in {@link ByondClient#sendMessage(ByondMessage)},
-     * without any custom timeout at all.</p>
+     * without any custom timeout at all.
      *
      * <p>Method is <b>not recommended</b> to be used, due to extra wait time from timeout,
-     * and possibility of shredded data if timeout is to low.</p>
+     * and possibility of shredding data if timeout is too low.
      *
      * @param byondMessage message object to send.
      * @param readTimeout timeout time to read response.
      *
-     * @return response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
+     * @return Response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
      *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
      *         then response instance will has 'null' in 'responseData' field
      *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
@@ -106,12 +106,11 @@ public class ByondClient {
     public ByondResponse sendMessage(ByondMessage byondMessage, int readTimeout)
             throws HostUnavailableException, UnexpectedResponseTypeException, EmptyResponseException, UnknownResponseException
     {
-        ensureMessageIsTopic(byondMessage);
-
         boolean closeCommAfterSend = (byondMessage.getExpectedResponse() == ResponseType.NONE);
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, closeCommAfterSend);
 
-        ByteBuffer rawServerResponse = comm.communicate(ByteArrayConverter.convertIntoBytes(byondMessage.getMessage()));
+        String messageTopic = byondMessage.getMessageAsTopic();
+        ByteBuffer rawServerResponse = comm.communicate(ByteArrayConverter.convertIntoBytes(messageTopic));
 
         if (!closeCommAfterSend) {
             ByondResponse byondResponse = ByondResponseConverter.convertIntoResponse(rawServerResponse);
@@ -119,14 +118,6 @@ public class ByondClient {
             return byondResponse;
         } else {
             return new ByondResponse(null, ResponseType.NONE);
-        }
-    }
-
-    private void ensureMessageIsTopic(ByondMessage message) {
-        String messageText = message.getMessage();
-
-        if (!messageText.startsWith("?")) {
-            message.setMessage("?" + messageText);
         }
     }
 

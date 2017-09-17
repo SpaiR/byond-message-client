@@ -12,54 +12,43 @@ import java.nio.charset.StandardCharsets;
 class ByondResponseConverter {
 
     static ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
-        Object responseData;
-        ResponseType actualResponseType;
-
         if (byteBuffer.limit() > 0) {
             ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
 
-            actualResponseType = pullOutActualResponseType(byteBuffer);
-            responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
+            ResponseType actualResponseType = pullOutActualResponseType(byteBuffer);
+            Object responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
+
+            return new ByondResponse(responseData, actualResponseType);
         } else {
             throw new EmptyResponseException("Response length is zero when ResponseType is not NONE.");
         }
-
-        return new ByondResponse(responseData, actualResponseType);
     }
 
     private static ResponseType pullOutActualResponseType(ByteBuffer data) throws UnknownResponseException {
-        ResponseType responseType;
-        String responseHexString = Integer.toHexString(data.get(4));
+        byte respTypeByte = data.get(4);
 
-        switch (responseHexString) {
-            case "2a":
-                responseType = ResponseType.FLOAT_NUMBER;
-                break;
-            case "6":
-                responseType = ResponseType.STRING;
-                break;
+        switch (respTypeByte) {
+            case 0x2a:
+                return ResponseType.FLOAT_NUMBER;
+            case 0x06:
+                return ResponseType.STRING;
             default:
                 throw new UnknownResponseException(
-                        "Unknown response encoding. Should be '2a' or '6'. Found '" + responseHexString + "'");
+                        "Unknown response encoding byte. Should be '0x2a' or '0x06'. Found '" + respTypeByte + "'");
         }
-
-        return responseType;
     }
 
     private static Object pullOutResponseData(ByteBuffer data, ResponseType responseType) {
         byte[] responseBytes = data.array();
-        Object responseData = null;
 
         switch (responseType) {
             case FLOAT_NUMBER:
-                responseData = createNumberTypeResponse(responseBytes);
-                break;
+                return createNumberTypeResponse(responseBytes);
             case STRING:
-                responseData = createStringTypeResponse(responseBytes);
-                break;
+                return createStringTypeResponse(responseBytes);
+            default:
+                return null;
         }
-
-        return responseData;
     }
 
     private static Float createNumberTypeResponse(byte[] bytes) {
@@ -71,13 +60,7 @@ class ByondResponseConverter {
     }
 
     private static ByteBuffer sanitizeRawByteBuffer(ByteBuffer rawBuffer) {
-        int responseSize = rawBuffer.limit();
-        ByteBuffer sanitizedBuffer = ByteBuffer.allocate(responseSize - 5);
-
-        for (int i = 5; i < responseSize; i++) {
-            sanitizedBuffer.put(rawBuffer.get(i));
-        }
-
-        return sanitizedBuffer;
+        int responseSize = rawBuffer.limit() - 5;
+        return ByteBuffer.allocate(responseSize).put(rawBuffer.array(), 5, responseSize);
     }
 }
