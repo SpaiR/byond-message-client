@@ -41,13 +41,10 @@ class ByondResponseConverter {
     private static Object pullOutResponseData(ByteBuffer data, ResponseType responseType) {
         byte[] responseBytes = data.array();
 
-        switch (responseType) {
-            case FLOAT_NUMBER:
-                return createNumberTypeResponse(responseBytes);
-            case STRING:
-                return createStringTypeResponse(responseBytes);
-            default:
-                return null;
+        if (responseType == ResponseType.FLOAT_NUMBER) {
+            return createNumberTypeResponse(responseBytes);
+        } else {
+            return createStringTypeResponse(responseBytes);
         }
     }
 
