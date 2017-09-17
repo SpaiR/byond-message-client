@@ -34,7 +34,7 @@ class TestSocketServer {
     void start() {
         executorService = Executors.newSingleThreadExecutor();
 
-        executorService.submit(() -> {
+        executorService.execute(() -> {
             try {
                 while (true) {
                     Socket socket = serverSocket.accept();
