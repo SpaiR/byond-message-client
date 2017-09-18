@@ -19,11 +19,11 @@ public class ByteArrayConverterTest {
     public void testConcatAllParts() throws Exception {
         ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
 
-        Method method = ByteArrayConverter.class.getDeclaredMethod("concatAllParts", char[][].class);
+        Method method = ByteArrayConverter.class.getDeclaredMethod("concatAllParts", char[].class, char[].class, char[].class);
         method.setAccessible(true);
 
         char[] controlArray = new char[]{'a', 'b', 'c', 'd', 'e', 'f'};
-        char[] arrayToTest = (char[]) method.invoke(byteArrayConverter, (Object) new char[][]{{'a', 'b', 'c'}, {'d', 'e', 'f'}});
+        char[] arrayToTest = (char[]) method.invoke(byteArrayConverter, new char[]{'a', 'b'}, new char[]{'c', 'd'}, new char[]{'e', 'f'});
 
         assertArrayEquals(controlArray, arrayToTest);
     }

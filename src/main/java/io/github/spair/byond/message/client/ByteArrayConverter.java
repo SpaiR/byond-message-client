@@ -12,19 +12,12 @@ class ByteArrayConverter {
         return convertToByteArray(concatAllParts(firstPart, messagePart, lastPart));
     }
 
-    private static char[] concatAllParts(char[]... arrays) {
-        int resultLength = 0;
-        for (char[] array : arrays) {
-            resultLength += array.length;
-        }
+    private static char[] concatAllParts(char[] first, char[] message, char[] last) {
+        char[] result = new char[first.length + message.length + last.length];
 
-        char[] result = new char[resultLength];
-
-        int offset = 0;
-        for (char[] array : arrays) {
-            System.arraycopy(array, 0, result, offset, array.length);
-            offset += array.length;
-        }
+        System.arraycopy(first, 0, result, 0, first.length);
+        System.arraycopy(message, 0, result, first.length, message.length);
+        System.arraycopy(last, 0, result, first.length + message.length, last.length);
 
         return result;
     }
