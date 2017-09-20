@@ -28,7 +28,7 @@ public class SocketCommunicatorTest {
     private static final byte[] ENCODED_NUMBER = new byte[]{0, -125, 0, 13, 0, 0, 0, 0, 0, 63, 110, 117, 109, 98, 101, 114, 0};
 
     @BeforeClass
-    public static void setUpOnce() throws Exception {
+    public static void prepare() throws Exception {
         serverSocket = new TestSocketServer(10101);
         serverSocket.start();
 
@@ -38,7 +38,7 @@ public class SocketCommunicatorTest {
     }
 
     @AfterClass
-    public static void tearDownOnce() throws Exception {
+    public static void finish() throws Exception {
         serverSocket.stop();
     }
 

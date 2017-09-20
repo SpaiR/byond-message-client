@@ -25,7 +25,7 @@ public class ByondClientTest {
     private static ServerAddress INVALID_ADDRESS;
 
     @BeforeClass
-    public static void setUpOnce() throws Exception {
+    public static void prepare() throws Exception {
         serverSocket = new TestSocketServer(9090);
         serverSocket.start();
 
@@ -34,7 +34,7 @@ public class ByondClientTest {
     }
 
     @AfterClass
-    public static void tearDownOnce() throws Exception {
+    public static void finish() throws Exception {
         serverSocket.stop();
     }
 
