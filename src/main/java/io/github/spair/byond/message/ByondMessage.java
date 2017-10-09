@@ -1,14 +1,12 @@
 package io.github.spair.byond.message;
 
-import io.github.spair.byond.message.response.ResponseType;
-
 /**
  * <p>Container for message, which will be sent to BYOND server.
  *
  * <p>Has server address as {@link io.github.spair.byond.message.ServerAddress}
  * (used by {@link io.github.spair.byond.message.client.ByondClient} to know, where message should be send),
  * message as {@link java.lang.String}
- * and type of expected response as {@link io.github.spair.byond.message.response.ResponseType}.
+ * and type of expected response as {@link ResponseType}.
  *
  * <p>Message must contain question mark in the beginning of string, but it could be omitted,
  * because it will be added on send process automatically if missing. So "ping" and "?ping" will do the same.
@@ -18,7 +16,7 @@ import io.github.spair.byond.message.response.ResponseType;
  *
  * <p>Expected response type checked on response validation process. If real response doesn't match,
  * exception {@link io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException} will be thrown.
- * Default expected response is {@link io.github.spair.byond.message.response.ResponseType#ANY}.
+ * Default expected response is {@link ResponseType#ANY}.
  */
 @SuppressWarnings("unused")
 public class ByondMessage {

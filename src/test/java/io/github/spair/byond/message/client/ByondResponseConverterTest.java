@@ -2,8 +2,8 @@ package io.github.spair.byond.message.client;
 
 import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
 import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
-import io.github.spair.byond.message.response.ByondResponse;
-import io.github.spair.byond.message.response.ResponseType;
+import io.github.spair.byond.message.ByondResponse;
+import io.github.spair.byond.message.ResponseType;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

@@ -6,8 +6,8 @@ import io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeExc
 import io.github.spair.byond.message.client.exceptions.communicator.HostUnavailableException;
 import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
 import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
-import io.github.spair.byond.message.response.ByondResponse;
-import io.github.spair.byond.message.response.ResponseType;
+import io.github.spair.byond.message.ByondResponse;
+import io.github.spair.byond.message.ResponseType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

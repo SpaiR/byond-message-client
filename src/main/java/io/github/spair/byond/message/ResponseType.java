@@ -1,16 +1,16 @@
-package io.github.spair.byond.message.response;
+package io.github.spair.byond.message;
 
 /**
  * Represents what type of response expected from BYOND,
  * when used in {@link io.github.spair.byond.message.ByondMessage}
- * and actual returned data type in {@link io.github.spair.byond.message.response.ByondResponse}.
+ * and actual returned data type in {@link ByondResponse}.
  */
 public enum ResponseType {
 
     /**
      * In case of using in {@link io.github.spair.byond.message.ByondMessage} means,
-     * that no response is expected and method will return empty {@link io.github.spair.byond.message.response.ByondResponse} instance.
-     * In {@link io.github.spair.byond.message.response.ByondResponse} it means, that 'responseData' field is 'null'.
+     * that no response is expected and method will return empty {@link ByondResponse} instance.
+     * In {@link ByondResponse} it means, that 'responseData' field is 'null'.
      */
     NONE,
 

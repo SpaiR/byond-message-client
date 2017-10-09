@@ -5,8 +5,8 @@ import io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeExc
 import io.github.spair.byond.message.client.exceptions.communicator.HostUnavailableException;
 import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
 import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
-import io.github.spair.byond.message.response.ByondResponse;
-import io.github.spair.byond.message.response.ResponseType;
+import io.github.spair.byond.message.ByondResponse;
+import io.github.spair.byond.message.ResponseType;
 
 import java.nio.ByteBuffer;
 
@@ -60,10 +60,10 @@ public class ByondClient {
      *
      * @param byondMessage message object to send.
      *
-     * @return Response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
-     *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
+     * @return Response from BYOND server as {@link ByondResponse}.
+     *         If message expecting response type is {@link ResponseType#NONE},
      *         then response instance will has 'null' in 'responseData' field
-     *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
+     *         and {@link ResponseType#NONE} in 'responseType' field.
      *
      * @throws HostUnavailableException signals that requested server unavailable to connect.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual got.
@@ -91,10 +91,10 @@ public class ByondClient {
      * @param byondMessage message object to send.
      * @param readTimeout timeout time to read response.
      *
-     * @return Response from BYOND server as {@link io.github.spair.byond.message.response.ByondResponse}.
-     *         If message expecting response type is {@link io.github.spair.byond.message.response.ResponseType#NONE},
+     * @return Response from BYOND server as {@link ByondResponse}.
+     *         If message expecting response type is {@link ResponseType#NONE},
      *         then response instance will has 'null' in 'responseData' field
-     *         and {@link io.github.spair.byond.message.response.ResponseType#NONE} in 'responseType' field.
+     *         and {@link ResponseType#NONE} in 'responseType' field.
      *
      * @throws HostUnavailableException signals that requested server unavailable to connect.
      * @throws UnexpectedResponseTypeException thrown if expected response doesn't equals to actual got.
