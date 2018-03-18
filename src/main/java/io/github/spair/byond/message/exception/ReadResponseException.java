@@ -5,7 +5,7 @@ package io.github.spair.byond.message.exception;
  */
 public class ReadResponseException extends RuntimeException {
 
-    public ReadResponseException(Throwable cause) {
+    public ReadResponseException(final Throwable cause) {
         super(cause);
     }
 }

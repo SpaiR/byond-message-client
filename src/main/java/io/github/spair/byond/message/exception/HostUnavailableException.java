@@ -5,7 +5,7 @@ package io.github.spair.byond.message.exception;
  */
 public class HostUnavailableException extends RuntimeException {
 
-    public HostUnavailableException(String message) {
+    public HostUnavailableException(final String message) {
         super(message);
     }
 }

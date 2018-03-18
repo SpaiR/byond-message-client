@@ -1,6 +1,10 @@
 package io.github.spair.byond.message;
 
-import io.github.spair.byond.message.exception.*;
+import io.github.spair.byond.message.exception.HostUnavailableException;
+import io.github.spair.byond.message.exception.CommunicationException;
+import io.github.spair.byond.message.exception.SendMessageException;
+import io.github.spair.byond.message.exception.ReadResponseException;
+import io.github.spair.byond.message.exception.InvalidHostException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,14 +28,15 @@ class SocketCommunicator {
 
     // Default timeout is 1 second or 1000 ms.
     private static final int DEFAULT_TIMEOUT = 1000;
+    private static final int DEFAULT_RESPONSE_SIZE = 10000;
 
-    SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean shouldReadResponse) {
+    SocketCommunicator(final ServerAddress serverAddress, final int readTimeout, final boolean shouldReadResponse) {
         this.serverAddress = serverAddress;
         this.readTimeout = readTimeout;
         this.shouldReadResponse = shouldReadResponse;
     }
 
-    ByteBuffer communicate(byte[] bytes) throws HostUnavailableException, CommunicationException {
+    ByteBuffer communicate(final byte[] bytes) throws HostUnavailableException, CommunicationException {
         try {
             try {
                 openConnection();
@@ -47,7 +52,7 @@ class SocketCommunicator {
         }
     }
 
-    private void sendToServer(byte[] bytes) throws SendMessageException {
+    private void sendToServer(final byte[] bytes) throws SendMessageException {
         try {
             outputStream.write(bytes);
             outputStream.flush();
@@ -70,7 +75,7 @@ class SocketCommunicator {
     }
 
     private ByteBuffer readWithTimeout() throws Exception {
-        ByteBuffer responseBuffer = ByteBuffer.allocate(10000);
+        ByteBuffer responseBuffer = ByteBuffer.allocate(DEFAULT_RESPONSE_SIZE);
 
         try {
             while (true) {
@@ -88,7 +93,7 @@ class SocketCommunicator {
         return (ByteBuffer) responseBuffer.flip();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"checkstyle:MagicNumber", "ResultOfMethodCallIgnored"})
     private ByteBuffer readWithoutTimeout() throws Exception {
         ByteBuffer responseBuffer = ByteBuffer.allocate(0);
 
@@ -128,13 +133,13 @@ class SocketCommunicator {
 
     private Socket createSocket() throws Exception {
         try {
-            Socket socket = new Socket(serverAddress.getName(), serverAddress.getPort());
-            socket.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
-            return socket;
+            Socket socketWithTimeout = new Socket(serverAddress.getName(), serverAddress.getPort());
+            socketWithTimeout.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
+            return socketWithTimeout;
         } catch (ConnectException e) {
             throw new HostUnavailableException(
-                    "Can't connect to host. Probably it's offline. Address: " +
-                            serverAddress.getName() + ":" + serverAddress.getPort());
+                    "Can't connect to host. Probably it's offline. Address: "
+                            + serverAddress.getName() + ":" + serverAddress.getPort());
         } catch (UnknownHostException e) {
             throw new InvalidHostException(
                     "Unknown host to connect. Please, check entered host address and port", serverAddress);

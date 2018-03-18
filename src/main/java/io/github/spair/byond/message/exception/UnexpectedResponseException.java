@@ -6,7 +6,7 @@ package io.github.spair.byond.message.exception;
  */
 public class UnexpectedResponseException extends RuntimeException {
 
-    public UnexpectedResponseException(String message) {
+    public UnexpectedResponseException(final String message) {
         super(message);
     }
 }

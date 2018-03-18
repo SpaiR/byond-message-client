@@ -5,7 +5,7 @@ package io.github.spair.byond.message.exception;
  */
 public class SendMessageException extends RuntimeException {
 
-    public SendMessageException(Throwable cause) {
+    public SendMessageException(final Throwable cause) {
         super(cause);
     }
 }

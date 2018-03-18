@@ -1,5 +1,7 @@
 package io.github.spair.byond.message;
 
+import java.util.Objects;
+
 /**
  * <p>Container for message, which will be sent to BYOND server.
  * <p>Message must contain question mark in the beginning of string, but it could be omitted,
@@ -21,23 +23,24 @@ public class ByondMessage {
     public ByondMessage() {
     }
 
-    public ByondMessage(ServerAddress serverAddress, String message) {
+    public ByondMessage(final ServerAddress serverAddress, final String message) {
         this.serverAddress = serverAddress;
         this.message = message;
     }
 
-    public ByondMessage(ServerAddress serverAddress, String message, ResponseType expectedResponse) {
+    public ByondMessage(final ServerAddress serverAddress, final String message, final ResponseType expectedResponse) {
         this.serverAddress = serverAddress;
         this.message = message;
         this.expectedResponse = expectedResponse;
     }
 
-    public ByondMessage(String serverName, int serverPort, String message) {
+    public ByondMessage(final String serverName, final int serverPort, final String message) {
         this.serverAddress = new ServerAddress(serverName, serverPort);
         this.message = message;
     }
 
-    public ByondMessage(String serverName, int serverPort, String message, ResponseType expectedResponse) {
+    public ByondMessage(
+            final String serverName, final int serverPort, final String message, final ResponseType expectedResponse) {
         this.serverAddress = new ServerAddress(serverName, serverPort);
         this.message = message;
         this.expectedResponse = expectedResponse;
@@ -62,7 +65,7 @@ public class ByondMessage {
         return serverAddress;
     }
 
-    public void setServerAddress(ServerAddress serverAddress) {
+    public void setServerAddress(final ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
     }
 
@@ -70,7 +73,7 @@ public class ByondMessage {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -78,36 +81,35 @@ public class ByondMessage {
         return expectedResponse;
     }
 
-    public void setExpectedResponse(ResponseType expectedResponse) {
+    public void setExpectedResponse(final ResponseType expectedResponse) {
         this.expectedResponse = expectedResponse;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String toString() {
+        return "ByondMessage{"
+                + "serverAddress=" + serverAddress
+                + ", message='" + message + '\''
+                + ", expectedResponse=" + expectedResponse
+                + '}';
+    }
 
-        ByondMessage message1 = (ByondMessage) o;
-
-        return (serverAddress != null ? serverAddress.equals(message1.serverAddress) : message1.serverAddress == null)
-                && (message != null ? message.equals(message1.message) : message1.message == null)
-                && expectedResponse == message1.expectedResponse;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ByondMessage that = (ByondMessage) o;
+        return Objects.equals(serverAddress, that.serverAddress)
+                && Objects.equals(message, that.message)
+                && expectedResponse == that.expectedResponse;
     }
 
     @Override
     public int hashCode() {
-        int result = serverAddress != null ? serverAddress.hashCode() : 0;
-        result = 31 * result + (message != null ? message.hashCode() : 0);
-        result = 31 * result + (expectedResponse != null ? expectedResponse.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ByondMessage{" +
-                "serverAddress=" + serverAddress +
-                ", message='" + message + '\'' +
-                ", expectedResponse=" + expectedResponse +
-                '}';
+        return Objects.hash(serverAddress, message, expectedResponse);
     }
 }

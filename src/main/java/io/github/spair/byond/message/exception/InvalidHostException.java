@@ -9,7 +9,7 @@ public class InvalidHostException extends RuntimeException {
 
     private ServerAddress hostAddress;
 
-    public InvalidHostException(String message, ServerAddress hostAddress) {
+    public InvalidHostException(final String message, final ServerAddress hostAddress) {
         super(message);
         this.hostAddress = hostAddress;
     }

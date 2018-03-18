@@ -5,7 +5,7 @@ package io.github.spair.byond.message.exception;
  */
 public class CommunicationException extends RuntimeException {
 
-    public CommunicationException(Throwable cause) {
+    public CommunicationException(final Throwable cause) {
         super(cause);
     }
 }

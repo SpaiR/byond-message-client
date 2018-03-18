@@ -1,5 +1,7 @@
 package io.github.spair.byond.message;
 
+import java.util.Objects;
+
 /**
  * Wrapper for server address.
  * Server name can be represented as DNS (game.server.com) or IP (1.2.3.4) value.
@@ -13,7 +15,7 @@ public class ServerAddress {
     public ServerAddress() {
     }
 
-    public ServerAddress(String name, int port) {
+    public ServerAddress(final String name, final int port) {
         this.name = name;
         this.port = port;
     }
@@ -22,7 +24,7 @@ public class ServerAddress {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -30,32 +32,32 @@ public class ServerAddress {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String toString() {
+        return "ServerAddress{"
+                + "name='" + name + '\''
+                + ", port=" + port
+                + '}';
+    }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ServerAddress that = (ServerAddress) o;
-
-        return port == that.port && (name != null ? name.equals(that.name) : that.name == null);
+        return port == that.port && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + port;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ServerAddress{" +
-                "name='" + name + '\'' +
-                ", port=" + port +
-                '}';
+        return Objects.hash(name, port);
     }
 }
