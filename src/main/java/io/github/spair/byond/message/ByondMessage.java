@@ -2,20 +2,13 @@ package io.github.spair.byond.message;
 
 /**
  * <p>Container for message, which will be sent to BYOND server.
- *
- * <p>Has server address as {@link io.github.spair.byond.message.ServerAddress}
- * (used by {@link io.github.spair.byond.message.client.ByondClient} to know, where message should be send),
- * message as {@link java.lang.String}
- * and type of expected response as {@link ResponseType}.
- *
  * <p>Message must contain question mark in the beginning of string, but it could be omitted,
- * because it will be added on send process automatically if missing. So "ping" and "?ping" will do the same.
+ * because it will be added on send process automatically if missing. So "ping" and "?ping" will have the same result.
  * Also, message itself is like a parameters for HTTP request, so multiple messages in one send is possible.
- * To do it all params should be divided with ";" or "{@literal &}".
+ * To do it all params should be divided with ";" or "{@literal &}" marks.
  * For example: "{@code ping&data=123&status}".
- *
  * <p>Expected response type checked on response validation process. If real response doesn't match,
- * exception {@link io.github.spair.byond.message.client.exceptions.UnexpectedResponseTypeException} will be thrown.
+ * exception {@link io.github.spair.byond.message.exception.UnexpectedResponseException} will be thrown.
  * Default expected response is {@link ResponseType#ANY}.
  */
 @SuppressWarnings("unused")
@@ -25,7 +18,8 @@ public class ByondMessage {
     private String message;
     private ResponseType expectedResponse = ResponseType.ANY;
 
-    public ByondMessage() {}
+    public ByondMessage() {
+    }
 
     public ByondMessage(ServerAddress serverAddress, String message) {
         this.serverAddress = serverAddress;

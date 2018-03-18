@@ -1,30 +1,30 @@
-package io.github.spair.byond.message.client;
+package io.github.spair.byond.message;
 
-import io.github.spair.byond.message.client.exceptions.converter.EmptyResponseException;
-import io.github.spair.byond.message.client.exceptions.converter.UnknownResponseException;
-import io.github.spair.byond.message.ByondResponse;
-import io.github.spair.byond.message.ResponseType;
+import io.github.spair.byond.message.exception.UnexpectedResponseException;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
-class ByondResponseConverter {
+final class ByondResponseConverter {
 
-    static ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws EmptyResponseException, UnknownResponseException {
+    private ByondResponseConverter() {
+    }
+
+    static ByondResponse convertIntoResponse(ByteBuffer byteBuffer) throws UnexpectedResponseException {
         if (byteBuffer.limit() > 0) {
             ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
 
-            ResponseType actualResponseType = pullOutActualResponseType(byteBuffer);
+            ResponseType actualResponseType = pullOutResponseType(byteBuffer);
             Object responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
 
             return new ByondResponse(responseData, actualResponseType);
         } else {
-            throw new EmptyResponseException("Response length is zero when ResponseType is not NONE.");
+            throw new UnexpectedResponseException("Response length is zero when ResponseType isn't NONE.");
         }
     }
 
-    private static ResponseType pullOutActualResponseType(ByteBuffer data) throws UnknownResponseException {
+    private static ResponseType pullOutResponseType(ByteBuffer data) throws UnexpectedResponseException {
         byte respTypeByte = data.get(4);
 
         switch (respTypeByte) {
@@ -33,7 +33,7 @@ class ByondResponseConverter {
             case 0x06:
                 return ResponseType.STRING;
             default:
-                throw new UnknownResponseException(
+                throw new UnexpectedResponseException(
                         "Unknown response encoding byte. Should be '0x2a' or '0x06'. Found '" + respTypeByte + "'");
         }
     }

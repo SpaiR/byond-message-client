@@ -1,4 +1,4 @@
-package io.github.spair.byond.message.client.exceptions.communicator;
+package io.github.spair.byond.message.exception;
 
 import io.github.spair.byond.message.ServerAddress;
 

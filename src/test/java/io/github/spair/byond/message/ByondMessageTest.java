@@ -10,7 +10,7 @@ public class ByondMessageTest {
     public void getMessageAsTopic() {
         final String controlString = "?test;data";
 
-        ByondMessage byondMessage1 = new ByondMessage(null,"test;data");
+        ByondMessage byondMessage1 = new ByondMessage(null, "test;data");
         ByondMessage byondMessage2 = new ByondMessage(null, "?test;data");
         ByondMessage byondMessage3 = new ByondMessage(null, null);
 

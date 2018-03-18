@@ -1,4 +1,4 @@
-package io.github.spair.byond.message.client;
+package io.github.spair.byond.message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +24,7 @@ class TestSocketServer {
 
     // Byte arrays for responses in BYOND format.
     static final byte[] NUMBER_RESPONSE = new byte[]{0, -125, 0, 5, 42, 0, 0, -72, 65};  // 23.0f
-    static final byte[] TEXT_RESPONSE = new byte[]{0, -125, 0, 18, 6, 83, 112, 97, 99, 101, 32, 83, 116, 97, 116, 105, 111, 110, 32, 49, 51, 0};  // Space Station 13
+    private static final byte[] TEXT_RESPONSE = new byte[]{0, -125, 0, 18, 6, 83, 112, 97, 99, 101, 32, 83, 116, 97, 116, 105, 111, 110, 32, 49, 51, 0};  // Space Station 13
 
     TestSocketServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -52,7 +52,7 @@ class TestSocketServer {
     }
 
     void stop() throws Exception {
-        executorService.shutdownNow();
+        executorService.shutdown();
         serverSocket.close();
     }
 

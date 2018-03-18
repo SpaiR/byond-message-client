@@ -1,29 +1,37 @@
 package io.github.spair.byond.message;
 
 /**
- * Container for converted BYOND server response.<br>
- * Contains response data as {@link java.lang.Object}, so type cast is necessary.
- * Also has actual response type as {@link ResponseType}.
+ * Container for converted BYOND response.<br>
+ * Response represented as {@link java.lang.Object} class, so type cast is necessary.
  */
 @SuppressWarnings("unused")
 public class ByondResponse {
 
-    private Object responseData;
+    private Object response;
     private ResponseType responseType;
 
-    public ByondResponse() {}
+    public ByondResponse() {
+    }
 
-    public ByondResponse(Object responseData, ResponseType responseType) {
-        this.responseData = responseData;
+    public ByondResponse(Object response, ResponseType responseType) {
+        this.response = response;
         this.responseType = responseType;
     }
 
-    public Object getResponseData() {
-        return responseData;
+    public Object getResponse() {
+        return response;
     }
 
-    public void setResponseData(Object responseData) {
-        this.responseData = responseData;
+    public String getResponseAsString() {
+        return (String) response;
+    }
+
+    public Float getResponseAsFloat() {
+        return (Float) response;
+    }
+
+    public void setResponse(Object response) {
+        this.response = response;
     }
 
     public ResponseType getResponseType() {
@@ -41,13 +49,13 @@ public class ByondResponse {
 
         ByondResponse that = (ByondResponse) o;
 
-        return (responseData != null ? responseData.equals(that.responseData) : that.responseData == null)
+        return (response != null ? response.equals(that.response) : that.response == null)
                 && responseType == that.responseType;
     }
 
     @Override
     public int hashCode() {
-        int result = responseData != null ? responseData.hashCode() : 0;
+        int result = response != null ? response.hashCode() : 0;
         result = 31 * result + (responseType != null ? responseType.hashCode() : 0);
         return result;
     }
@@ -55,7 +63,7 @@ public class ByondResponse {
     @Override
     public String toString() {
         return "ByondResponse{" +
-                "responseData=" + responseData +
+                "response=" + response +
                 ", responseType=" + responseType +
                 '}';
     }

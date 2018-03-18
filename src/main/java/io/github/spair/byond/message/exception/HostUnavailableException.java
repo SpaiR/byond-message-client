@@ -1,4 +1,4 @@
-package io.github.spair.byond.message.client.exceptions.communicator;
+package io.github.spair.byond.message.exception;
 
 /**
  * Occurs while establishment connection to BYOND server and tells mainly that host is currently offline.

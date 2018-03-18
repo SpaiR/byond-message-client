@@ -1,7 +1,6 @@
-package io.github.spair.byond.message.client;
+package io.github.spair.byond.message;
 
-import io.github.spair.byond.message.ServerAddress;
-import io.github.spair.byond.message.client.exceptions.communicator.*;
+import io.github.spair.byond.message.exception.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,15 +20,15 @@ class SocketCommunicator {
     private ServerAddress serverAddress;
 
     private int readTimeout;
-    private boolean isSendOnly;
+    private boolean shouldReadResponse;
 
     // Default timeout is 1 second or 1000 ms.
     private static final int DEFAULT_TIMEOUT = 1000;
 
-    SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean isSendOnly) {
+    SocketCommunicator(ServerAddress serverAddress, int readTimeout, boolean shouldReadResponse) {
         this.serverAddress = serverAddress;
         this.readTimeout = readTimeout;
-        this.isSendOnly = isSendOnly;
+        this.shouldReadResponse = shouldReadResponse;
     }
 
     ByteBuffer communicate(byte[] bytes) throws HostUnavailableException, CommunicationException {
@@ -37,7 +36,7 @@ class SocketCommunicator {
             try {
                 openConnection();
                 sendToServer(bytes);
-                return isSendOnly ? null : readFromServer();
+                return shouldReadResponse ? readFromServer() : null;
             } finally {
                 closeConnection();
             }
@@ -63,7 +62,7 @@ class SocketCommunicator {
             if (readTimeout > 0) {
                 return readWithTimeout();
             } else {
-                return simpleReadWithoutTimeout();
+                return readWithoutTimeout();
             }
         } catch (Exception e) {
             throw new ReadResponseException(e);
@@ -83,18 +82,19 @@ class SocketCommunicator {
 
                 responseBuffer.put((byte) inputByte);
             }
-        } catch (SocketTimeoutException ignored) {}
+        } catch (SocketTimeoutException ignored) {
+        }
 
         return (ByteBuffer) responseBuffer.flip();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private ByteBuffer simpleReadWithoutTimeout() throws Exception {
+    private ByteBuffer readWithoutTimeout() throws Exception {
         ByteBuffer responseBuffer = ByteBuffer.allocate(0);
 
         // This try/catch block is to handle cases, when BYOND doesn't return anything.
         // We ignoring the exception, because after it happened zero length byte buffer will be returned.
-        // It will result into 'EmptyResponseException' later, so this is fine.
+        // It will result into 'UnexpectedResponseException' later, so this is fine.
         try {
             byte[] respInfo = new byte[5];
             inputStream.read(respInfo);
@@ -108,7 +108,8 @@ class SocketCommunicator {
                 responseBuffer = ByteBuffer.allocate(respInfo.length + respData.length);
                 responseBuffer.put(respInfo).put(respData);
             }
-        } catch (SocketTimeoutException ignored) {}
+        } catch (SocketTimeoutException ignored) {
+        }
 
         return (ByteBuffer) responseBuffer.flip();
     }
@@ -132,7 +133,7 @@ class SocketCommunicator {
             return socket;
         } catch (ConnectException e) {
             throw new HostUnavailableException(
-                    "Cannot to connect to host. Probably it's offline. Address: " +
+                    "Can't connect to host. Probably it's offline. Address: " +
                             serverAddress.getName() + ":" + serverAddress.getPort());
         } catch (UnknownHostException e) {
             throw new InvalidHostException(

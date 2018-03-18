@@ -7,25 +7,15 @@ package io.github.spair.byond.message;
  */
 public enum ResponseType {
 
-    /**
-     * In case of using in {@link io.github.spair.byond.message.ByondMessage} means,
-     * that no response is expected and method will return empty {@link ByondResponse} instance.
-     * In {@link ByondResponse} it means, that 'responseData' field is 'null'.
-     */
+    /** No response is expected, so {@link ByondClient#sendMessage} will return null. */
     NONE,
 
-    /**
-     * Any type of data is expected. Also default value for {@link io.github.spair.byond.message.ByondMessage}.
-     */
+    /** Any type of data is expected. */
     ANY,
 
-    /**
-     * Representation of {@link java.lang.Float} type.
-     */
+    /** Representation of {@link java.lang.Float} type. */
     FLOAT_NUMBER,
 
-    /**
-     * Representation of {@link java.lang.String} type.
-     */
+    /** Representation of {@link java.lang.String} type. */
     STRING
 }
