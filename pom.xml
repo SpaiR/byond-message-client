@@ -112,7 +112,7 @@
                             <exclude>io/github/spair/byond/message/ServerAddress.class</exclude>
                             <exclude>io/github/spair/byond/message/ByondResponse.class</exclude>
                             <exclude>io/github/spair/byond/message/ResponseType.class</exclude>
-                            <exclude>io/github/spair/byond/message/exceptions/**</exclude>
+                            <exclude>io/github/spair/byond/message/exception/**</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
