@@ -3,7 +3,6 @@ package io.github.spair.byond.message;
 import io.github.spair.byond.message.exception.HostUnavailableException;
 import io.github.spair.byond.message.exception.UnexpectedResponseException;
 
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 /**
@@ -43,7 +42,6 @@ public final class ByondClient {
      * @throws HostUnavailableException    signals that requested server unavailable to connect
      * @throws UnexpectedResponseException if somehow response has unexpected behavior
      */
-    @Nullable
     public ByondResponse sendMessage(final ByondMessage byondMessage)
             throws HostUnavailableException, UnexpectedResponseException {
         return sendMessage(byondMessage, 0);
@@ -66,7 +64,6 @@ public final class ByondClient {
      * @throws HostUnavailableException    signals that requested server unavailable to connect.
      * @throws UnexpectedResponseException if somehow response has unexpected behavior
      */
-    @Nullable
     public ByondResponse sendMessage(final ByondMessage byondMessage, final int readTimeout)
             throws HostUnavailableException, UnexpectedResponseException {
         boolean withResponse = (byondMessage.getExpectedResponse() != ResponseType.NONE);
