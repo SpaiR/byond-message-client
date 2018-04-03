@@ -7,10 +7,10 @@ final class ByteArrayConverter {
 
     private static final Charset BYOND_CHARSET = Charset.forName("cp1251");
 
-    private ByteArrayConverter() {
+    ByteArrayConverter() {
     }
 
-    static byte[] convertIntoBytes(final String textMessage) {
+    byte[] convertIntoBytes(final String textMessage) {
         byte[] message = textMessage.getBytes(BYOND_CHARSET);
         char messageSize = (char) (message.length + 6);
 
@@ -20,7 +20,7 @@ final class ByteArrayConverter {
         return concatAllParts(prefix, message, suffix);
     }
 
-    private static byte[] concatAllParts(final byte[] prefix, final byte[] message, final byte[] suffix) {
+    private byte[] concatAllParts(final byte[] prefix, final byte[] message, final byte[] suffix) {
         byte[] result = new byte[prefix.length + message.length + suffix.length];
 
         System.arraycopy(prefix, 0, result, 0, prefix.length);
@@ -30,7 +30,7 @@ final class ByteArrayConverter {
         return result;
     }
 
-    private static byte[] toBytes(final char[] chars) {
+    private byte[] toBytes(final char[] chars) {
         byte[] result = new byte[chars.length];
 
         for (int i = 0; i < result.length; i++) {

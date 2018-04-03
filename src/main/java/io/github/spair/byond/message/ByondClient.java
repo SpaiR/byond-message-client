@@ -17,21 +17,8 @@ import java.nio.ByteBuffer;
  */
 public final class ByondClient {
 
-    private ByondClient() {
-    }
-
-    /**
-     * Method to get singleton instance of ByondClient object.
-     *
-     * @return ByondClient object instance
-     */
-    public static ByondClient getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
-
-    private static class SingletonHolder {
-        private static final ByondClient HOLDER_INSTANCE = new ByondClient();
-    }
+    private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
+    private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
 
     /**
      * Sends message to BYOND server without waiting for response.
@@ -86,10 +73,10 @@ public final class ByondClient {
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, withResponse);
 
         String messageTopic = byondMessage.getMessageAsTopic();
-        ByteBuffer rawServerResponse = comm.communicate(ByteArrayConverter.convertIntoBytes(messageTopic));
+        ByteBuffer rawServerResponse = comm.communicate(byteArrayConverter.convertIntoBytes(messageTopic));
 
         if (withResponse) {
-            ByondResponse byondResponse = ByondResponseConverter.convertIntoResponse(rawServerResponse);
+            ByondResponse byondResponse = byondResponseConverter.convertIntoResponse(rawServerResponse);
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
             return byondResponse;
         } else {
@@ -103,5 +90,20 @@ public final class ByondClient {
             throw new UnexpectedResponseException(
                     "Actual response type doesn't equals to expected. Expected: " + expected + ". Actual: " + actual);
         }
+    }
+
+    private ByondClient() {
+    }
+
+    /**
+     * Method to get singleton instance of ByondClient object.
+     * @return ByondClient object instance
+     */
+    public static ByondClient getInstance() {
+        return SingletonHolder.HOLDER_INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final ByondClient HOLDER_INSTANCE = new ByondClient();
     }
 }

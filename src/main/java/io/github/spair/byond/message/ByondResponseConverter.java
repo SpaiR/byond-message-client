@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("checkstyle:MagicNumber")
 final class ByondResponseConverter {
 
-    private ByondResponseConverter() {
+    ByondResponseConverter() {
     }
 
-    static ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
+    ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
         if (byteBuffer.limit() > 0) {
             ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
 
@@ -25,7 +25,7 @@ final class ByondResponseConverter {
         }
     }
 
-    private static ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
+    private ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
         byte respTypeByte = data.get(4);
 
         switch (respTypeByte) {
@@ -39,7 +39,7 @@ final class ByondResponseConverter {
         }
     }
 
-    private static Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
+    private Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
         byte[] responseBytes = data.array();
 
         if (responseType == ResponseType.FLOAT_NUMBER) {
@@ -49,15 +49,15 @@ final class ByondResponseConverter {
         }
     }
 
-    private static Float createNumberTypeResponse(final byte[] bytes) {
+    private Float createNumberTypeResponse(final byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
-    private static String createStringTypeResponse(final byte[] bytes) {
+    private String createStringTypeResponse(final byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
-    private static ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
+    private ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
         int responseSize = rawBuffer.limit() - 5;
         return ByteBuffer.allocate(responseSize).put(rawBuffer.array(), 5, responseSize);
     }
