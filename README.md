@@ -34,7 +34,7 @@ There are three main classes to use:
 ### Example:
 ```
 ByondMessage message = new ByondMessage("bagil.game.tgstation13.org", 2337, "ping");
-ByondResponse response = ByondClient.getInstance().sendMessage(message);
+ByondResponse response = new ByondClient().sendMessage(message);
 ```
 If you print response object you could see something like that: 
 ```
@@ -43,7 +43,6 @@ ByondResponse(response=56.0, responseType=FLOAT_NUMBER)
 Response data is an Object class, so manual class cast is needed.
 
 #### Additional info:
-* `ByondClient` object if fully singleton class with lazy initialization.
 * On BYOND side message should be handled in `World/Topic()` method. Look [BYOND Ref](http://www.byond.com/docs/ref/info.html#/world/proc/Topic) for more info.
 * If you want just to send message to BYOND and you don't care about response use `sendCommand()` method instead of `sendMessage()` or set expected response type in ByondMessage as `ResponseType.NONE`.
 * To control response type from BYOND set `ResponseType.FLOAT_NUMBER` or `ResponseType.STRING` in `ByondMessage` instance.

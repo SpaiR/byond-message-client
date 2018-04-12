@@ -6,7 +6,7 @@ import io.github.spair.byond.message.exception.UnexpectedResponseException;
 import java.nio.ByteBuffer;
 
 /**
- * <p>Singleton class to send string messages from Java app to BYOND server.
+ * <p>Class to send string messages from Java app to BYOND server.
  * <p>Simple usage example:
  * <pre>{@code
  *      ByondMessage messageToSend = new ByondMessage(new ServerAddress("bagil.game.tgstation13.org", 2337), "?ping");
@@ -87,20 +87,5 @@ public final class ByondClient {
             throw new UnexpectedResponseException(
                     "Actual response type doesn't equals to expected. Expected: " + expected + ". Actual: " + actual);
         }
-    }
-
-    private ByondClient() {
-    }
-
-    /**
-     * Method to get singleton instance of ByondClient object.
-     * @return ByondClient object instance
-     */
-    public static ByondClient getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
-
-    private static class SingletonHolder {
-        private static final ByondClient HOLDER_INSTANCE = new ByondClient();
     }
 }
