@@ -8,7 +8,7 @@
 Small library for Java, which provide simple way to send messages and receive responses from [BYOND](http://www.byond.com/) server.
 
 ## Installation
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-message-client.svg?style=flat)](https://mvnrepository.com/artifact/io.github.spair/byond-message-client)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-message-client.svg?style=flat)](http://search.maven.org/#search|ga|1|g:"io.github.spair"a:"byond-message-client")
 [![JCenter](https://img.shields.io/bintray/v/spair/io.github.spair/byond-message-client.svg?label=jcenter)](https://bintray.com/spair/io.github.spair/byond-message-client/_latestVersion)
 
 Library is deployed and provided with Maven Central and JCenter repositories.
