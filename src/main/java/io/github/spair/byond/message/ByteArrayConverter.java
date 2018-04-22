@@ -7,9 +7,6 @@ final class ByteArrayConverter {
 
     private static final Charset BYOND_CHARSET = Charset.forName("cp1251");
 
-    ByteArrayConverter() {
-    }
-
     byte[] convertIntoBytes(final String textMessage) {
         byte[] message = textMessage.getBytes(BYOND_CHARSET);
         char messageSize = (char) (message.length + 6);

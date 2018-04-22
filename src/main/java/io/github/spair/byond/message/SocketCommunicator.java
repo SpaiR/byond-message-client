@@ -64,11 +64,7 @@ class SocketCommunicator {
 
     private ByteBuffer readFromServer() throws ReadResponseException {
         try {
-            if (readTimeout > 0) {
-                return readWithTimeout();
-            } else {
-                return readWithoutTimeout();
-            }
+            return readTimeout > 0 ? readWithTimeout() : readWithoutTimeout();
         } catch (Exception e) {
             throw new ReadResponseException(e);
         }
@@ -120,7 +116,7 @@ class SocketCommunicator {
     }
 
     private void openConnection() throws Exception {
-        socket = createSocket();
+        createSocket();
         outputStream = socket.getOutputStream();
         inputStream = socket.getInputStream();
     }
@@ -131,11 +127,10 @@ class SocketCommunicator {
         }
     }
 
-    private Socket createSocket() throws Exception {
+    private void createSocket() throws Exception {
         try {
-            Socket socketWithTimeout = new Socket(serverAddress.getName(), serverAddress.getPort());
-            socketWithTimeout.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
-            return socketWithTimeout;
+            socket = new Socket(serverAddress.getName(), serverAddress.getPort());
+            socket.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
         } catch (ConnectException e) {
             throw new HostUnavailableException(
                     "Can't connect to host. Probably it's offline. Address: "

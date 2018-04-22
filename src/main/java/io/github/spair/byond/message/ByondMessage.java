@@ -13,7 +13,7 @@ import java.util.Objects;
  * exception {@link io.github.spair.byond.message.exception.UnexpectedResponseException} will be thrown.
  * Default expected response is {@link ResponseType#ANY}.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ByondMessage {
 
     private ServerAddress serverAddress;

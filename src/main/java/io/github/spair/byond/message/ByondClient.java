@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
  * }</pre>
  * <p>ServerAddress could be omitted like that: {@code new ByondMessage("bagil.game.tgstation13.org", 2337, "ping")}
  */
+@SuppressWarnings("WeakerAccess")
 public final class ByondClient {
 
     private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();

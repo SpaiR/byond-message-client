@@ -9,9 +9,6 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("checkstyle:MagicNumber")
 final class ByondResponseConverter {
 
-    ByondResponseConverter() {
-    }
-
     ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
         if (byteBuffer.limit() > 0) {
             ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);

@@ -6,7 +6,7 @@ import java.util.Objects;
  * Wrapper for server address.
  * Server name can be represented as DNS (game.server.com) or IP (1.2.3.4) value.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ServerAddress {
 
     private String name;

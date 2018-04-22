@@ -6,7 +6,7 @@ import java.util.Objects;
  * Container for converted BYOND response.<br>
  * Response represented as {@link java.lang.Object} class, so type cast is necessary.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ByondResponse {
 
     private Object response;
