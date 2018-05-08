@@ -5,6 +5,9 @@ import io.github.spair.byond.message.exception.UnexpectedResponseException;
 
 import java.nio.ByteBuffer;
 
+import static io.github.spair.byond.message.ByteArrayConverter.convertIntoBytes;
+import static io.github.spair.byond.message.ByondResponseConverter.convertIntoResponse;
+
 /**
  * <p>Class to send string messages from Java app to BYOND server.
  * <p>Simple usage example:
@@ -16,9 +19,6 @@ import java.nio.ByteBuffer;
  */
 @SuppressWarnings("WeakerAccess")
 public final class ByondClient {
-
-    private final ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
-    private final ByondResponseConverter byondResponseConverter = new ByondResponseConverter();
 
     /**
      * Sends message to BYOND server without waiting for response.
@@ -71,10 +71,10 @@ public final class ByondClient {
         SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, withResponse);
 
         String messageTopic = byondMessage.getMessageAsTopic();
-        ByteBuffer rawServerResponse = comm.communicate(byteArrayConverter.convertIntoBytes(messageTopic));
+        ByteBuffer rawServerResponse = comm.communicate(convertIntoBytes(messageTopic));
 
         if (withResponse) {
-            ByondResponse byondResponse = byondResponseConverter.convertIntoResponse(rawServerResponse);
+            ByondResponse byondResponse = convertIntoResponse(rawServerResponse);
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
             return byondResponse;
         } else {

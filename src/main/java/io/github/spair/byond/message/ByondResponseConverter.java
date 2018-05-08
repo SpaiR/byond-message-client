@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("checkstyle:MagicNumber")
 final class ByondResponseConverter {
 
-    ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
+    static ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
         if (byteBuffer.limit() > 0) {
             ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
 
@@ -22,7 +22,7 @@ final class ByondResponseConverter {
         }
     }
 
-    private ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
+    private static ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
         byte respTypeByte = data.get(4);
 
         switch (respTypeByte) {
@@ -36,7 +36,7 @@ final class ByondResponseConverter {
         }
     }
 
-    private Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
+    private static Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
         byte[] responseBytes = data.array();
 
         if (responseType == ResponseType.FLOAT_NUMBER) {
@@ -46,16 +46,19 @@ final class ByondResponseConverter {
         }
     }
 
-    private Float createNumberTypeResponse(final byte[] bytes) {
+    private static Float createNumberTypeResponse(final byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
-    private String createStringTypeResponse(final byte[] bytes) {
+    private static String createStringTypeResponse(final byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
-    private ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
+    private static ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
         int responseSize = rawBuffer.limit() - 5;
         return ByteBuffer.allocate(responseSize).put(rawBuffer.array(), 5, responseSize);
+    }
+
+    private ByondResponseConverter() {
     }
 }
