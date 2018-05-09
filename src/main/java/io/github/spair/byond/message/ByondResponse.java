@@ -24,6 +24,10 @@ public class ByondResponse {
         return response;
     }
 
+    public <T> T getResponse(final Class<T> clazz) {
+        return clazz.cast(response);
+    }
+
     public String getResponseAsString() {
         return (String) response;
     }
