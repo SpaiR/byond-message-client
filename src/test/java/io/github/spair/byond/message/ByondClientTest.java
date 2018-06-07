@@ -3,7 +3,6 @@ package io.github.spair.byond.message;
 import io.github.spair.byond.message.exception.HostUnavailableException;
 import io.github.spair.byond.message.exception.UnexpectedResponseException;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -11,8 +10,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class ByondClientTest {
-
-    private ByondClient byondClient;
 
     private static TestSocketServer serverSocket;
 
@@ -28,11 +25,6 @@ public class ByondClientTest {
         INVALID_ADDRESS = new ServerAddress("127.0.0.1", 12345);
     }
 
-    @Before
-    public void setUp() {
-        byondClient = new ByondClient();
-    }
-
     @AfterClass
     public static void finish() throws Exception {
         serverSocket.stop();
@@ -40,17 +32,17 @@ public class ByondClientTest {
 
     @Test
     public void testSendCommand() {
-        byondClient.sendCommand(new ByondMessage(VALID_ADDRESS, "test"));
+        ByondClient.sendCommand(new ByondMessage(VALID_ADDRESS, "test"));
     }
 
     @Test(expected = HostUnavailableException.class)
     public void testSendCommandWhenHostUnavailableException() {
-        byondClient.sendCommand(new ByondMessage(INVALID_ADDRESS, "test"));
+        ByondClient.sendCommand(new ByondMessage(INVALID_ADDRESS, "test"));
     }
 
     @Test
     public void testSendMessageWhenNumberResponse() {
-        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST));
+        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST));
 
         assertEquals(TestSocketServer.NUMBER_VALUE, response.getResponse());
         assertEquals(ResponseType.FLOAT_NUMBER, response.getResponseType());
@@ -58,7 +50,7 @@ public class ByondClientTest {
 
     @Test
     public void testSendMessageWhenTextResponse() {
-        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST));
+        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST));
 
         assertEquals(TestSocketServer.TEXT_VALUE, response.getResponse());
         assertEquals(ResponseType.STRING, response.getResponseType());
@@ -66,27 +58,27 @@ public class ByondClientTest {
 
     @Test
     public void testSendMessageWhenNoneResponseExpected() {
-        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
+        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
         assertNull(response);
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenEmptyResponse() {
-        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, "test", ResponseType.ANY));
+        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, "test", ResponseType.ANY));
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenDifferentResponseType() {
-        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.FLOAT_NUMBER));
+        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.FLOAT_NUMBER));
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenUnknownResponse() {
-        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.UNKNOWN_REQUEST));
+        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.UNKNOWN_REQUEST));
     }
 
     @Test
     public void testSendMessageWithTimeout() {
-        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST), 500);
+        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST), 500);
     }
 }
