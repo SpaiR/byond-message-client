@@ -17,12 +17,12 @@ Library is deployed and provided with Maven Central and JCenter repositories.
 <dependency>
     <groupId>io.github.spair</groupId>
     <artifactId>byond-message-client</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 </dependency>
 ```
 #### build.gradle:
 ```
-compile 'io.github.spair:byond-message-client:1.2.3'
+compile 'io.github.spair:byond-message-client:1.2.4'
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ There are three main classes to use:
 ### Example:
 ```
 ByondMessage message = new ByondMessage("bagil.game.tgstation13.org", 2337, "ping");
-ByondResponse response = new ByondClient().sendMessage(message);
+ByondResponse response = ByondClient.sendMessage(message);
 ```
 If you print response object you could see something like that: 
 ```
