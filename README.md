@@ -17,12 +17,12 @@ Library is deployed and provided with Maven Central and JCenter repositories.
 <dependency>
     <groupId>io.github.spair</groupId>
     <artifactId>byond-message-client</artifactId>
-    <version>1.2.4</version>
+    <version>${last.version}</version>
 </dependency>
 ```
 #### build.gradle:
 ```
-compile 'io.github.spair:byond-message-client:1.2.4'
+compile 'io.github.spair:byond-message-client:${last.version}'
 ```
 
 ## Usage
