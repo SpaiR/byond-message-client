@@ -9,6 +9,8 @@ import static org.junit.Assert.assertEquals;
 
 public class ByondResponseConverterTest {
 
+    private final ByondResponseConverter converter = new ByondResponseConverter();
+
     // 57.0f
     private final byte[] floatInBytes = new byte[]{0, -125, 0, 5, 42, 0, 0, 100, 66, 0, 0, 0, 0};
     // Space Station 13
@@ -19,7 +21,7 @@ public class ByondResponseConverterTest {
         ByteBuffer byteBuffer = ByteBuffer.wrap(floatInBytes);
         ByondResponse expectedByondResponse = new ByondResponse(57.0f, ResponseType.FLOAT_NUMBER);
 
-        assertEquals(expectedByondResponse, ByondResponseConverter.convertIntoResponse(byteBuffer));
+        assertEquals(expectedByondResponse, converter.convertIntoResponse(byteBuffer));
     }
 
     @Test
@@ -27,18 +29,18 @@ public class ByondResponseConverterTest {
         ByteBuffer byteBuffer = ByteBuffer.wrap(stringInBytes);
         ByondResponse expectedByondResponse = new ByondResponse("Space Station 13", ResponseType.STRING);
 
-        assertEquals(expectedByondResponse, ByondResponseConverter.convertIntoResponse(byteBuffer));
+        assertEquals(expectedByondResponse, converter.convertIntoResponse(byteBuffer));
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testConvertIntoResponseWhenEmptyResponse() {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[0]);
-        ByondResponseConverter.convertIntoResponse(byteBuffer);
+        converter.convertIntoResponse(byteBuffer);
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testConvertIntoResponseWhenUnknownResponse() {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
-        ByondResponseConverter.convertIntoResponse(byteBuffer);
+        converter.convertIntoResponse(byteBuffer);
     }
 }

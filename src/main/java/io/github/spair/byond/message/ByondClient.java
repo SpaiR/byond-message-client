@@ -2,23 +2,27 @@ package io.github.spair.byond.message;
 
 import io.github.spair.byond.message.exception.HostUnavailableException;
 import io.github.spair.byond.message.exception.UnexpectedResponseException;
+import lombok.val;
 
-import java.nio.ByteBuffer;
-
-import static io.github.spair.byond.message.ByteArrayConverter.convertIntoBytes;
-import static io.github.spair.byond.message.ByondResponseConverter.convertIntoResponse;
+import java.nio.charset.Charset;
 
 /**
  * <p>Class to send string messages from Java app to BYOND server.
  * <p>Simple usage example:
  * <pre>{@code
  *      ByondMessage messageToSend = new ByondMessage(new ServerAddress("bagil.game.tgstation13.org", 2337), "?ping");
- *      ByondResponse response = ByondClient.sendMessage(messageToSend);
+ *      ByondResponse response = new ByondClient().sendMessage(messageToSend);
  * }</pre>
  * <p>ServerAddress could be omitted like that: {@code new ByondMessage("bagil.game.tgstation13.org", 2337, "ping")}
  */
 @SuppressWarnings("WeakerAccess")
 public final class ByondClient {
+
+    /** <b>cp1251</b> {@link Charset}, used by BYOND. */
+    public static final Charset BYOND_CHARSET = Charset.forName("cp1251");
+
+    private ByteArrayConverter byteArrayConverter = new ByteArrayConverter();
+    private ByondResponseConverter responseConverter = new ByondResponseConverter();
 
     /**
      * Sends message to BYOND server without waiting for response.
@@ -26,7 +30,7 @@ public final class ByondClient {
      * @param byondMessage message to send
      * @throws HostUnavailableException signals that requested server unavailable to connect
      */
-    public static void sendCommand(final ByondMessage byondMessage) throws HostUnavailableException {
+    public void sendCommand(final ByondMessage byondMessage) throws HostUnavailableException {
         byondMessage.setExpectedResponse(ResponseType.NONE);
         sendMessage(byondMessage, 0);
     }
@@ -43,8 +47,7 @@ public final class ByondClient {
      * @throws HostUnavailableException    signals that requested server unavailable to connect
      * @throws UnexpectedResponseException if somehow response has unexpected behavior
      */
-    public static ByondResponse sendMessage(final ByondMessage byondMessage)
-            throws HostUnavailableException, UnexpectedResponseException {
+    public ByondResponse sendMessage(final ByondMessage byondMessage) throws HostUnavailableException, UnexpectedResponseException {
         return sendMessage(byondMessage, 0);
     }
 
@@ -65,16 +68,15 @@ public final class ByondClient {
      * @throws HostUnavailableException    signals that requested server unavailable to connect.
      * @throws UnexpectedResponseException if somehow response has unexpected behavior
      */
-    public static ByondResponse sendMessage(final ByondMessage byondMessage, final int readTimeout)
-            throws HostUnavailableException, UnexpectedResponseException {
-        boolean withResponse = (byondMessage.getExpectedResponse() != ResponseType.NONE);
-        SocketCommunicator comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, withResponse);
+    public ByondResponse sendMessage(final ByondMessage byondMessage, final int readTimeout) throws HostUnavailableException, UnexpectedResponseException {
+        val withResponse = (byondMessage.getExpectedResponse() != ResponseType.NONE);
+        val comm = new SocketCommunicator(byondMessage.getServerAddress(), readTimeout, withResponse);
 
-        String messageTopic = byondMessage.getMessageAsTopic();
-        ByteBuffer rawServerResponse = comm.communicate(convertIntoBytes(messageTopic));
+        val messageTopic = byondMessage.getMessageAsTopic();
+        val rawServerResponse = comm.communicate(byteArrayConverter.convertIntoBytes(messageTopic));
 
         if (withResponse) {
-            ByondResponse byondResponse = convertIntoResponse(rawServerResponse);
+            val byondResponse = responseConverter.convertIntoResponse(rawServerResponse);
             validateResponseType(byondMessage.getExpectedResponse(), byondResponse.getResponseType());
             return byondResponse;
         } else {
@@ -82,14 +84,11 @@ public final class ByondClient {
         }
     }
 
-    private static void validateResponseType(final ResponseType expected, final ResponseType actual)
-            throws UnexpectedResponseException {
+    private void validateResponseType(final ResponseType expected, final ResponseType actual) {
         if (expected != ResponseType.ANY && expected != actual) {
             throw new UnexpectedResponseException(
-                    "Actual response type doesn't equals to expected. Expected: " + expected + ". Actual: " + actual);
+                    String.format("Actual response type doesn't equals to expected. Expected: %s. Actual: %s", expected, actual)
+            );
         }
-    }
-
-    private ByondClient() {
     }
 }

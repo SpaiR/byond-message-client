@@ -1,20 +1,22 @@
 package io.github.spair.byond.message;
 
 import io.github.spair.byond.message.exception.UnexpectedResponseException;
+import lombok.val;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
+
+import static io.github.spair.byond.message.ByondClient.BYOND_CHARSET;
 
 @SuppressWarnings("checkstyle:MagicNumber")
 final class ByondResponseConverter {
 
-    static ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
+    ByondResponse convertIntoResponse(final ByteBuffer byteBuffer) throws UnexpectedResponseException {
         if (byteBuffer.limit() > 0) {
-            ByteBuffer sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
+            val sanitizedByteBuffer = sanitizeRawByteBuffer(byteBuffer);
 
-            ResponseType actualResponseType = pullOutResponseType(byteBuffer);
-            Object responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
+            val actualResponseType = pullOutResponseType(byteBuffer);
+            val responseData = pullOutResponseData(sanitizedByteBuffer, actualResponseType);
 
             return new ByondResponse(responseData, actualResponseType);
         } else {
@@ -22,7 +24,7 @@ final class ByondResponseConverter {
         }
     }
 
-    private static ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
+    private ResponseType pullOutResponseType(final ByteBuffer data) throws UnexpectedResponseException {
         byte respTypeByte = data.get(4);
 
         switch (respTypeByte) {
@@ -31,12 +33,11 @@ final class ByondResponseConverter {
             case 0x06:
                 return ResponseType.STRING;
             default:
-                throw new UnexpectedResponseException(
-                        "Unknown response encoding byte. Should be '0x2a' or '0x06'. Found '" + respTypeByte + "'");
+                throw new UnexpectedResponseException("Unknown response encoding byte. Should be '0x2a' or '0x06'. Found '" + respTypeByte + "'");
         }
     }
 
-    private static Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
+    private Object pullOutResponseData(final ByteBuffer data, final ResponseType responseType) {
         byte[] responseBytes = data.array();
 
         if (responseType == ResponseType.FLOAT_NUMBER) {
@@ -46,19 +47,16 @@ final class ByondResponseConverter {
         }
     }
 
-    private static Float createNumberTypeResponse(final byte[] bytes) {
+    private Float createNumberTypeResponse(final byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
-    private static String createStringTypeResponse(final byte[] bytes) {
-        return new String(bytes, StandardCharsets.UTF_8).trim();
+    private String createStringTypeResponse(final byte[] bytes) {
+        return new String(bytes, BYOND_CHARSET).trim();
     }
 
-    private static ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
+    private ByteBuffer sanitizeRawByteBuffer(final ByteBuffer rawBuffer) {
         int responseSize = rawBuffer.limit() - 5;
         return ByteBuffer.allocate(responseSize).put(rawBuffer.array(), 5, responseSize);
-    }
-
-    private ByondResponseConverter() {
     }
 }

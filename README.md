@@ -34,7 +34,7 @@ There are three main classes to use:
 ### Example:
 ```
 ByondMessage message = new ByondMessage("bagil.game.tgstation13.org", 2337, "ping");
-ByondResponse response = ByondClient.sendMessage(message);
+ByondResponse response = new ByondClient().sendMessage(message);
 ```
 If you print response object you could see something like that: 
 ```

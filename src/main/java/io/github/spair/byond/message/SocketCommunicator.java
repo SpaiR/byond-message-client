@@ -5,6 +5,8 @@ import io.github.spair.byond.message.exception.CommunicationException;
 import io.github.spair.byond.message.exception.SendMessageException;
 import io.github.spair.byond.message.exception.ReadResponseException;
 import io.github.spair.byond.message.exception.InvalidHostException;
+import lombok.val;
+import lombok.var;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -71,16 +73,14 @@ class SocketCommunicator {
     }
 
     private ByteBuffer readWithTimeout() throws Exception {
-        ByteBuffer responseBuffer = ByteBuffer.allocate(DEFAULT_RESPONSE_SIZE);
+        val responseBuffer = ByteBuffer.allocate(DEFAULT_RESPONSE_SIZE);
 
         try {
             while (true) {
                 int inputByte = inputStream.read();
-
                 if (inputByte == -1) {
                     break;
                 }
-
                 responseBuffer.put((byte) inputByte);
             }
         } catch (SocketTimeoutException ignored) {
@@ -91,7 +91,7 @@ class SocketCommunicator {
 
     @SuppressWarnings({"checkstyle:MagicNumber", "ResultOfMethodCallIgnored"})
     private ByteBuffer readWithoutTimeout() throws Exception {
-        ByteBuffer responseBuffer = ByteBuffer.allocate(0);
+        var responseBuffer = ByteBuffer.allocate(0);
 
         // This try/catch block is to handle cases, when BYOND doesn't return anything.
         // We ignoring the exception, because after it happened zero length byte buffer will be returned.
@@ -132,12 +132,11 @@ class SocketCommunicator {
             socket = new Socket(serverAddress.getName(), serverAddress.getPort());
             socket.setSoTimeout(readTimeout > 0 ? readTimeout : DEFAULT_TIMEOUT);
         } catch (ConnectException e) {
-            throw new HostUnavailableException(
-                    "Can't connect to host. Probably it's offline. Address: "
-                            + serverAddress.getName() + ":" + serverAddress.getPort());
+            val serverName = serverAddress.getName();
+            val serverPort = serverAddress.getPort();
+            throw new HostUnavailableException("Can't connect to host. Probably it's offline. Address: " + serverName + ":" + serverPort);
         } catch (UnknownHostException e) {
-            throw new InvalidHostException(
-                    "Unknown host to connect. Please, check entered host address and port", serverAddress);
+            throw new InvalidHostException("Unknown host to connect. Please, check entered host address and port", serverAddress);
         }
     }
 }

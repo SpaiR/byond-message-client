@@ -11,6 +11,8 @@ import static org.junit.Assert.assertNull;
 
 public class ByondClientTest {
 
+    private final ByondClient byondClient = new ByondClient();
+
     private static TestSocketServer serverSocket;
 
     private static ServerAddress VALID_ADDRESS;
@@ -32,17 +34,17 @@ public class ByondClientTest {
 
     @Test
     public void testSendCommand() {
-        ByondClient.sendCommand(new ByondMessage(VALID_ADDRESS, "test"));
+        byondClient.sendCommand(new ByondMessage(VALID_ADDRESS, "test"));
     }
 
     @Test(expected = HostUnavailableException.class)
     public void testSendCommandWhenHostUnavailableException() {
-        ByondClient.sendCommand(new ByondMessage(INVALID_ADDRESS, "test"));
+        byondClient.sendCommand(new ByondMessage(INVALID_ADDRESS, "test"));
     }
 
     @Test
     public void testSendMessageWhenNumberResponse() {
-        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST));
+        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST));
 
         assertEquals(TestSocketServer.NUMBER_VALUE, response.getResponse());
         assertEquals(ResponseType.FLOAT_NUMBER, response.getResponseType());
@@ -50,7 +52,7 @@ public class ByondClientTest {
 
     @Test
     public void testSendMessageWhenTextResponse() {
-        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST));
+        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST));
 
         assertEquals(TestSocketServer.TEXT_VALUE, response.getResponse());
         assertEquals(ResponseType.STRING, response.getResponseType());
@@ -58,27 +60,27 @@ public class ByondClientTest {
 
     @Test
     public void testSendMessageWhenNoneResponseExpected() {
-        ByondResponse response = ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
+        ByondResponse response = byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.NONE));
         assertNull(response);
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenEmptyResponse() {
-        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, "test", ResponseType.ANY));
+        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, "test", ResponseType.ANY));
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenDifferentResponseType() {
-        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.FLOAT_NUMBER));
+        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.TEXT_REQUEST, ResponseType.FLOAT_NUMBER));
     }
 
     @Test(expected = UnexpectedResponseException.class)
     public void testSendMessageWhenUnknownResponse() {
-        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.UNKNOWN_REQUEST));
+        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.UNKNOWN_REQUEST));
     }
 
     @Test
     public void testSendMessageWithTimeout() {
-        ByondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST), 500);
+        byondClient.sendMessage(new ByondMessage(VALID_ADDRESS, TestSocketServer.NUMBER_REQUEST), 500);
     }
 }

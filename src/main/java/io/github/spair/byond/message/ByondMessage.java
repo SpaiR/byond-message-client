@@ -1,6 +1,7 @@
 package io.github.spair.byond.message;
 
-import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>Container for message, which will be sent to BYOND server.
@@ -13,15 +14,14 @@ import java.util.Objects;
  * exception {@link io.github.spair.byond.message.exception.UnexpectedResponseException} will be thrown.
  * Default expected response is {@link ResponseType#ANY}.
  */
-@SuppressWarnings({"WeakerAccess", "unused"})
+@Data
+@NoArgsConstructor
+@SuppressWarnings("WeakerAccess")
 public class ByondMessage {
 
     private ServerAddress serverAddress;
     private String message;
     private ResponseType expectedResponse = ResponseType.ANY;
-
-    public ByondMessage() {
-    }
 
     public ByondMessage(final ServerAddress serverAddress, final String message) {
         this.serverAddress = serverAddress;
@@ -39,8 +39,7 @@ public class ByondMessage {
         this.message = message;
     }
 
-    public ByondMessage(
-            final String serverName, final int serverPort, final String message, final ResponseType expectedResponse) {
+    public ByondMessage(final String serverName, final int serverPort, final String message, final ResponseType expectedResponse) {
         this.serverAddress = new ServerAddress(serverName, serverPort);
         this.message = message;
         this.expectedResponse = expectedResponse;
@@ -59,57 +58,5 @@ public class ByondMessage {
         } else {
             return message;
         }
-    }
-
-    public ServerAddress getServerAddress() {
-        return serverAddress;
-    }
-
-    public void setServerAddress(final ServerAddress serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(final String message) {
-        this.message = message;
-    }
-
-    public ResponseType getExpectedResponse() {
-        return expectedResponse;
-    }
-
-    public void setExpectedResponse(final ResponseType expectedResponse) {
-        this.expectedResponse = expectedResponse;
-    }
-
-    @Override
-    public String toString() {
-        return "ByondMessage{"
-                + "serverAddress=" + serverAddress
-                + ", message='" + message + '\''
-                + ", expectedResponse=" + expectedResponse
-                + '}';
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ByondMessage that = (ByondMessage) o;
-        return Objects.equals(serverAddress, that.serverAddress)
-                && Objects.equals(message, that.message)
-                && expectedResponse == that.expectedResponse;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(serverAddress, message, expectedResponse);
     }
 }
